@@ -1,0 +1,6 @@
+:close_resources
+:close_file ldr2 pushp closef call
+:close_mem pushp mem_close call
+pushp "YET: internal error\n" pushp putstre call
+pushp end_error jmp
+

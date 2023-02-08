@@ -19,7 +19,7 @@ import "io.chloreh"
 import "alloc2.chloreh"
 import "stddef.chloreh"
 import "string.chloreh"
-import "/usr/local/include/sys.chloreh"
+import "sys.chloreh"
 
 set BUF_SIZE 40
 

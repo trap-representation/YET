@@ -63,6 +63,8 @@ dup pushc 'd' pushp com_d jeq
 dup pushc 'u' pushp com_u jeq
 dup pushc 'r' pushp com_r jeq
 dup pushc 'm' pushp com_m jeq
+dup pushc 'y' pushp com_y jeq
+dup pushc 'k' pushp com_k jeq
 dup pushc 'z' pushp com_z jeq
 dup pushc ';' pushp com_semicolon jeq
 dup pushc 'v' pushp com_v jeq
@@ -386,6 +388,108 @@ ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp text_editor_loop_dw jeq
 pushp com_v_loop_until_newline4 jmp
+
+:com_k
+pop
+
+pushp get_buf_ptr call str3
+
+ldr3 +buffer.offset ldhl
+
+pushp aseg call
+dup pushp NULL pushp close_mem jeq ;check if the allocation was successful
+
+pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
+
+pushp get_buf_ptr call +buffer.buf_contents ldhp
+ldr3 dup +buffer.buf_contents ldhp
+swap +buffer.offset ldhl
+pushp memcpy call
+
+ldr3 +buffer.offset ldhl str4
+
+pushp dec_buf call
+
+:com_k_loop_until_space
+ldr4 ldr3 +buffer.size ldhl pushi 1 swap subl pushp com_k_write_rem jeq
+ldr4 pushi 1 addl str4
+ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
+ldhc pushc '\n' pushp com_k_write_rem jeq
+pushp com_k_loop_until_space jmp
+
+:com_k_write_rem
+pushp inc_buf call
+ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl
+pushp get_buf_ptr call +buffer.buf_contents ldhp
+
+pushp rseg call
+dup pushp NULL pushp close_mem jeq ;check if the allocation was successful
+
+pushp get_buf_ptr call +buffer.buf_contents sthp
+
+pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl swap addp b2h
+ldr3 +buffer.buf_contents ldhp h2b ldr4 swap addp b2h
+ldr4 ldr3 +buffer.size ldhl subl
+pushp memcpy call
+
+pushp get_buf_ptr call
+
+ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.size sthl
+ldr3 +buffer.offset ldhl over +buffer.offset sthl
+ldr3 +buffer.disp_start ldhl swap +buffer.disp_start sthl
+
+pushp text_editor_loop_dw jmp
+
+:com_y
+pop
+
+pushp get_buf_ptr call str3
+
+ldr3 +buffer.offset ldhl
+
+pushp aseg call
+dup pushp NULL pushp close_mem jeq ;check if the allocation was successful
+
+pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
+
+pushp get_buf_ptr call +buffer.buf_contents ldhp
+ldr3 dup +buffer.buf_contents ldhp
+swap +buffer.offset ldhl
+pushp memcpy call
+
+ldr3 +buffer.offset ldhl str4
+
+pushp dec_buf call
+
+:com_y_loop_until_space
+ldr4 ldr3 +buffer.size ldhl pushi 1 swap subl pushp com_y_write_rem jeq
+ldr4 pushi 1 addl str4
+ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
+ldhc pushp isspace call pushp com_y_write_rem jnz
+pushp com_y_loop_until_space jmp
+
+:com_y_write_rem
+pushp inc_buf call
+ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl
+pushp get_buf_ptr call +buffer.buf_contents ldhp
+
+pushp rseg call
+dup pushp NULL pushp close_mem jeq ;check if the allocation was successful
+
+pushp get_buf_ptr call +buffer.buf_contents sthp
+
+pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl swap addp b2h
+ldr3 +buffer.buf_contents ldhp h2b ldr4 swap addp b2h
+ldr4 ldr3 +buffer.size ldhl subl
+pushp memcpy call
+
+pushp get_buf_ptr call
+
+ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.size sthl
+ldr3 +buffer.offset ldhl over +buffer.offset sthl
+ldr3 +buffer.disp_start ldhl swap +buffer.disp_start sthl
+
+pushp text_editor_loop_dw jmp
 
 :com_z
 pop

@@ -124,12 +124,12 @@ pushp write_buffer_continue0 jmp
 pushp get_buf_ptr call str3
 
 ldr3 dup +buffer.disp_start ldhl swap +buffer.offset ldhl pushp dec_disp_start jls
-pushp write_buffer_continue_1 jmp
+pushp write_buffer_continue1 jmp
 
 :dec_disp_start
 ldr3 dup +buffer.offset ldhl swap +buffer.disp_start sthl
 
-:write_buffer_continue_1
+:write_buffer_continue1
 ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui pushp inc_disp_start jls
 pushp write_first_half jmp
 

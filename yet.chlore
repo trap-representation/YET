@@ -38,7 +38,7 @@ pushp mem_init call ;initialize the heap
 
 pushl MAX_PATHSIZE pushi 1 addl
 pushp aseg call
-dup pushp NULL pushp close_mem jeq ;check if the allocation was successful
+dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
 
 dup dup
 pushi 1
@@ -47,7 +47,7 @@ pushp getargv call
 
 pushi O_RDONLY
 pushp openf call
-dup pushi -1 pushp close_mem jeq
+dup pushi -1 pushp open_failure_rd jeq
 str2 ;save the file descriptor in gpr 2
 
 pushp read_file jmp

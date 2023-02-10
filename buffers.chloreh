@@ -109,15 +109,13 @@ ret
 ;a hackish way to clear the display device in an environment-dependent manner
 
 pushui typ_Linux pushp clear_Linux jnz
-pushui typ_Windows pushp clear_Windows jnz
 pushp write_buffer_continue0 jmp
 
 :clear_Linux
-pushp "clear" pushp system call
-pushp write_buffer_continue0 jmp
-
-:clear_Windows
-pushp "cls" pushp system call
+pushc 0x1B pushp putchar call
+pushp "[2J" pushp putstr call ;clear the entire screen
+pushc 0x1B pushp putchar call
+pushp "[H" pushp putstr call ;move the cursor to the top left corner
 pushp write_buffer_continue0 jmp
 
 :write_buffer_continue0

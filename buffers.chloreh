@@ -108,7 +108,7 @@ ret
 :write_buffer
 ;a hackish way to clear the display device in an environment-dependent manner
 
-pushui typ_Linux pushp clear_Linux jnz
+pushui sys_typ pushui typ_Linux pushp clear_Linux jeq
 pushp write_buffer_continue0 jmp
 
 :clear_Linux

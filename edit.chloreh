@@ -142,6 +142,8 @@ pushi -1 pushp write_failure jeq
 
 pushp closef call
 
+pushp "YET: written\n" pushp putstr call
+
 pushp text_editor_loop_dw jmp
 
 :task_equal
@@ -173,6 +175,8 @@ ldr0
 pushi -1 pushp write_failure jeq
 
 pushp closef call
+
+pushp "YET: written\n" pushp putstr call
 
 pushp text_editor_loop_dw jmp
 

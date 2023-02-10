@@ -43,7 +43,7 @@ ldr2 pushp closef call
 pushp allocate_bufs call
 
 str5 ;save the pointer to the `buffers' struct that we allocated in gpr 5
-pushi 0 str2 ;this is the buffer we're currently working on (aka undo-level in some text editors)
+pushi 0 str2 ;this is the buffer we're currently working on
 
 :text_editor_loop
 pushp write_buffer call

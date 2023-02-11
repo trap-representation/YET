@@ -50,26 +50,26 @@ pop ldr5 h2b +buffers.buffer4 swap ret
 swap
 
 sizeof buffers pushp aseg call ;allocate the buffers
-dup pushp NULL pushp allocation_failure jeq ;check if allocation was successful
+ldr0 pushp allocation_failure jnz ;check if allocation was successful
 
 sizeof buffer pushp aseg call
-dup pushp NULL pushp allocation_failure jeq
+ldr0 pushp allocation_failure jnz
 over h2b +buffers.buffer0 sthp
 
 sizeof buffer pushp aseg call
-dup pushp NULL pushp allocation_failure jeq
+ldr0 pushp allocation_failure jnz
 over h2b +buffers.buffer1 sthp
 
 sizeof buffer pushp aseg call
-dup pushp NULL pushp allocation_failure jeq
+ldr0 pushp allocation_failure jnz
 over h2b +buffers.buffer2 sthp
 
 sizeof buffer pushp aseg call
-dup pushp NULL pushp allocation_failure jeq
+ldr0 pushp allocation_failure jnz
 over h2b +buffers.buffer3 sthp
 
 sizeof buffer pushp aseg call
-dup pushp NULL pushp allocation_failure jeq
+ldr0 pushp allocation_failure jnz
 over h2b +buffers.buffer4 sthp
 
 swap over h2b +buffers.buffer0.buf_contents sthp
@@ -121,6 +121,8 @@ pushp write_buffer_continue0 jmp
 :write_buffer_continue0
 pushp get_buf_ptr call str3
 
+ldr3 +buffer.buf_contents ldhp pushp NULL pushp write_buffer_buf_is_null jeq
+
 ldr3 dup +buffer.disp_start ldhl swap +buffer.offset ldhl pushp dec_disp_start jls
 pushp write_buffer_continue1 jmp
 
@@ -160,6 +162,12 @@ pushp write_buffer_end jmp
 ldr3 dup +buffer.size ldhl swap +buffer.offset ldhl swap subl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
 pushp putnstr call
+ldr0 pushi EOF pushp stdout_write_error jeq
+pushp write_buffer_end jmp
+
+:write_buffer_buf_is_null
+pushc '|'
+pushp putchar call
 ldr0 pushi EOF pushp stdout_write_error jeq
 
 :write_buffer_end

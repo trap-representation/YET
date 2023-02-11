@@ -38,7 +38,7 @@ pushp mem_init call ;initialize the heap
 
 pushl MAX_PATHSIZE pushi 1 addl
 pushp aseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 dup dup
 pushi 1

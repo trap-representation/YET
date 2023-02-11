@@ -7,7 +7,7 @@ pushi 0 str3 ;this is the size of the buffer
 pushl BUF_SIZE
 pushp aseg call ;allocate a buffer of size BUF_SIZE bytes
 ;we will be using this to read the file in chunks
-dup pushp NULL pushp allocation_failure_f2 jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure_f2 jnz ;check if the allocation was successful
 
 :read_loop
 ldr2 ;get the file descriptor
@@ -20,7 +20,7 @@ str4 ;store the size of the chunk we just read in gpr 4
 swap ;dest src -- src dest
 ldr4 ldr3 addl ;add the size of the buffer to the size of the chunk we just read
 swap pushp rseg call
-dup pushp NULL pushp allocation_failure_f2 jeq ;check if reallocation was successful
+ldr0 pushp allocation_failure_f2 jnz ;check if reallocation was successful
 
 over over ;src dest -- src dest src dest
 ldr3 swap h2b addp b2h ;this is equivalent to evaluating &buf[gpr3] in C
@@ -97,10 +97,10 @@ pop
 
 pushp inc_buf call
 pushp get_buf_ptr call
-dup +buffer.buf_contents dup ldhp pushp flush call pushp NULL swap sthp
-dup +buffer.size pushl 0 sthl
-dup +buffer.offset pushl 0 sthl
-+buffer.disp_start pushl 0 sthl
+pushp NULL over +buffer.buf_contents dup ldhp pushp flush call sthp
+pushl 0 over +buffer.size sthl
+pushl 0 over +buffer.offset sthl
+pushl 0 swap +buffer.disp_start sthl
 
 pushp text_editor_loop_dw jmp
 
@@ -144,8 +144,10 @@ pop
 dup pushi O_WRONLY
 pushp openf call
 dup pushi -1 pushp open_failure_wr jeq
-dup
 
+pushp get_buf_ptr call +buffer.buf_contents ldhp pushp NULL pushp task_w_continue jeq
+
+dup
 pushp get_buf_ptr call dup +buffer.buf_contents ldhp
 swap +buffer.size ldhl
 pushp writef call
@@ -153,6 +155,7 @@ ldr0
 
 pushi -1 pushp write_failure jeq
 
+:task_w_continue
 pushp closef call
 
 pushp "YET: written\n" pushp putstr call
@@ -164,7 +167,7 @@ pop
 
 pushl MAX_PATHSIZE pushi 1 addl
 pushp aseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 dup
 
@@ -179,6 +182,8 @@ dup pushi -1 pushp open_failure_wr jeq
 
 swap pushp flush call
 
+pushp get_buf_ptr call +buffer.buf_contents ldhp pushp NULL pushp task_equal_continue jeq
+
 dup
 pushp get_buf_ptr call dup +buffer.buf_contents ldhp
 swap +buffer.size ldhl
@@ -186,6 +191,8 @@ pushp writef call
 ldr0
 
 pushi -1 pushp write_failure jeq
+
+:task_equal_continue
 
 pushp closef call
 
@@ -224,7 +231,7 @@ pushp get_buf_ptr call
 dup +buffer.size ldhl pushi 1 swap subl
 
 pushp aseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
 
@@ -251,7 +258,7 @@ pushp get_buf_ptr call
 dup +buffer.size ldhl pushi 1 addl
 
 pushp aseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
 
@@ -424,7 +431,7 @@ pushp get_buf_ptr call str3
 ldr3 +buffer.offset ldhl
 
 pushp aseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
 
@@ -450,7 +457,7 @@ ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl
 pushp get_buf_ptr call +buffer.buf_contents ldhp
 
 pushp rseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 pushp get_buf_ptr call +buffer.buf_contents sthp
 
@@ -475,7 +482,7 @@ pushp get_buf_ptr call str3
 ldr3 +buffer.offset ldhl
 
 pushp aseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
 
@@ -501,7 +508,7 @@ ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl
 pushp get_buf_ptr call +buffer.buf_contents ldhp
 
 pushp rseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 pushp get_buf_ptr call +buffer.buf_contents sthp
 
@@ -553,7 +560,7 @@ pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call
 
 ldr3
 pushp aseg call
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 over sthp
 
@@ -570,7 +577,7 @@ swap pop ;src dest -- dest
 pushl BUF_SIZE pushi 1 addl
 pushp aseg call ;allocate a buffer of size BUF_SIZE bytes
 ;we will be using this to read the file in chunks
-dup pushp NULL pushp allocation_failure jeq ;check if the allocation was successful
+ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 :task_colon_read_stdin_loop
 pushl BUF_SIZE
@@ -582,7 +589,7 @@ str4 ;store the size of the chunk we just read in gpr 4
 swap ;dest src -- src dest
 ldr4 ldr3 addl ;add the size of the buffer to the size of the chunk we just read
 swap pushp rseg call
-dup pushp NULL pushp allocation_failure jeq ;check if reallocation was successful
+ldr0 pushp allocation_failure jnz ;check if reallocation was successful
 
 over over ;src dest -- src dest src dest
 ldr3 swap h2b addp b2h ;this is equivalent to evaluating &buf[gpr3] in C
@@ -607,7 +614,7 @@ ldr4 +buffer.buf_contents sthp
 pushp dec_buf call pushp get_buf_ptr call
 
 dup dup +buffer.offset ldhl swap +buffer.size ldhl subl ldr3 addl ldr4 +buffer.buf_contents ldhp pushp rseg call
-dup pushp NULL pushp allocation_failure jeq ;check if reallocation was successful
+ldr0 pushp allocation_failure jnz ;check if reallocation was successful
 ldr4 +buffer.buf_contents sthp
 
 ldr4 +buffer.buf_contents ldhp h2b ldr3 swap addp b2h

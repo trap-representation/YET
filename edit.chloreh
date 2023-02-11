@@ -63,6 +63,7 @@ dup pushc 'd' pushp task_d jeq
 dup pushc 'u' pushp task_u jeq
 dup pushc 'r' pushp task_r jeq
 dup pushc 'm' pushp task_m jeq
+dup pushc 'c' pushp task_c jeq
 dup pushc 'y' pushp task_y jeq
 dup pushc 'k' pushp task_k jeq
 dup pushc 'z' pushp task_z jeq
@@ -88,6 +89,18 @@ pushp text_editor_loop_dw jmp
 
 :noassigned_task
 pushp "YET: no task assigned to character\n" pushp putstre call
+
+pushp text_editor_loop_dw jmp
+
+:task_c
+pop
+
+pushp inc_buf call
+pushp get_buf_ptr call
+dup +buffer.buf_contents dup ldhp pushp flush call pushp NULL swap sthp
+dup +buffer.size pushl 0 sthl
+dup +buffer.offset pushl 0 sthl
++buffer.disp_start pushl 0 sthl
 
 pushp text_editor_loop_dw jmp
 
@@ -267,7 +280,7 @@ pushp text_editor_loop_dw jmp
 pop
 
 pushp get_buf_ptr call str3
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 pushp text_editor_loop_dw jmp
 
@@ -325,7 +338,7 @@ pop
 pushp get_buf_ptr call str3
 
 :task_comma_loop_until_end
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 pushp task_comma_loop_until_end jmp
 
@@ -369,35 +382,35 @@ pop
 pushp get_buf_ptr call str3
 
 :task_v_loop_until_newline0
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline1 jeq
 pushp task_v_loop_until_newline0 jmp
 
 :task_v_loop_until_newline1
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline2 jeq
 pushp task_v_loop_until_newline1 jmp
 
 :task_v_loop_until_newline2
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline3 jeq
 pushp task_v_loop_until_newline2 jmp
 
 :task_v_loop_until_newline3
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline4 jeq
 pushp task_v_loop_until_newline3 jmp
 
 :task_v_loop_until_newline4
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp text_editor_loop_dw jeq
@@ -425,7 +438,7 @@ ldr3 +buffer.offset ldhl str4
 pushp dec_buf call
 
 :task_k_loop_until_space
-ldr4 ldr3 +buffer.size ldhl pushi 1 swap subl pushp task_k_write_rem jeq
+ldr4 ldr3 +buffer.size ldhl pushp task_k_write_rem jeq
 ldr4 pushi 1 addl str4
 ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_k_write_rem jeq
@@ -476,7 +489,7 @@ ldr3 +buffer.offset ldhl str4
 pushp dec_buf call
 
 :task_y_loop_until_space
-ldr4 ldr3 +buffer.size ldhl pushi 1 swap subl pushp task_y_write_rem jeq
+ldr4 ldr3 +buffer.size ldhl pushp task_y_write_rem jeq
 ldr4 pushi 1 addl str4
 ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
 ldhc pushp isspace call pushp task_y_write_rem jnz
@@ -511,7 +524,7 @@ pop
 pushp get_buf_ptr call str3
 
 :task_z_loop_until_space
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushp isspace call pushp text_editor_loop_dw jnz
@@ -523,7 +536,7 @@ pop
 pushp get_buf_ptr call str3
 
 :task_n_loop_until_newline
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushi 1 swap subl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp text_editor_loop_dw jeq

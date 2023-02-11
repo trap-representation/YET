@@ -106,19 +106,11 @@ swap
 ret
 
 :write_buffer
-;a hackish way to clear the display device in an environment-dependent manner
-
-pushui sys_typ pushui typ_Linux pushp clear_Linux jeq
-pushp write_buffer_continue0 jmp
-
-:clear_Linux
 pushc 0x1B pushp putchar call
 pushp "[2J" pushp putstr call ;clear the entire screen
 pushc 0x1B pushp putchar call
 pushp "[H" pushp putstr call ;move the cursor to the top left corner
-pushp write_buffer_continue0 jmp
 
-:write_buffer_continue0
 pushp get_buf_ptr call str3
 
 ldr3 +buffer.buf_contents ldhp pushp NULL pushp write_buffer_buf_is_null jeq

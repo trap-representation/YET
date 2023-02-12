@@ -72,6 +72,7 @@ swap pop pushi EOF ldr3
 
 :get_from_stdin
 pushp getchar call
+ldr0 pushi EOF pushp stdin_read_error jeq
 
 :do_task
 dup pushc 'f' pushp task_f jeq
@@ -794,6 +795,7 @@ pushi 0
 
 :get_integer_from_stdin_loop
 pushp getchar call
+ldr0 pushi EOF pushp stdin_read_error jeq
 dup pushi EOF pushp get_integer_from_stdin_end jeq
 
 pushc '0' over pushp maybe_integer jge

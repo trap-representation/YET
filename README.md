@@ -6,8 +6,10 @@ YET
 
 YET is a standard-compliant implementation of [Becoms](https://github.com/OSCAPL/Becoms) written entirely in the [Chlore Programming Language](https://github.com/trap-representation/Chlore).
 
-#### YET in action ####
+#### YET in action (GIF) ####
 ![YET in action](./yet_in_action.gif)
+
+----
 
 Every source file in this repository is licensed under the GPLv3 license, even if the text of the license is not explicitly placed at the start of the file. For files where the license is not explicitly placed in, modify/use/distribute them the way you would've had the following text been present in the file.
 

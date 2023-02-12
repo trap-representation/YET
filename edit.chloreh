@@ -435,15 +435,12 @@ pushp get_buf_ptr call str3
 
 :task_dot_loop_until_beginning
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
+ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_dot_loop_until_beginning_is_newline jeq
-pushp task_dot_loop_until_beginning_continue jmp
+pushp task_dot_loop_until_beginning jmp
 
 :task_dot_loop_until_beginning_is_newline
 ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
-
-:task_dot_loop_until_beginning_continue
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-pushp task_dot_loop_until_beginning jmp
 
 :task_semicolon
 pop

@@ -1,7 +1,9 @@
 struct buffer
   l: size
   l: offset
+  l: linum
   l: disp_start
+  l: dslinum
   ui: max_dispchars
   p: buf_contents!
 
@@ -77,30 +79,40 @@ ldr3 over h2b +buffers.buffer0.size sthl
 pushui 512 over h2b +buffers.buffer0.max_dispchars sthui
 pushi 0 over h2b +buffers.buffer0.offset sthl
 pushi 0 over h2b +buffers.buffer0.disp_start sthl
+pushi 1 over h2b +buffers.buffer0.linum sthl
+pushi 1 over h2b +buffers.buffer0.dslinum sthl
 
 pushp NULL over h2b +buffers.buffer1.buf_contents sthp
 pushi 0 over h2b +buffers.buffer1.size sthl
 pushui 512 over h2b +buffers.buffer1.max_dispchars sthui
 pushi 0 over h2b +buffers.buffer1.offset sthl
 pushi 0 over h2b +buffers.buffer1.disp_start sthl
+pushi 1 over h2b +buffers.buffer1.linum sthl
+pushi 1 over h2b +buffers.buffer1.dslinum sthl
 
 pushp NULL over h2b +buffers.buffer2.buf_contents sthp
 pushi 0 over h2b +buffers.buffer2.size sthl
 pushui 512 over h2b +buffers.buffer2.max_dispchars sthui
 pushi 0 over h2b +buffers.buffer2.offset sthl
 pushi 0 over h2b +buffers.buffer2.disp_start sthl
+pushi 1 over h2b +buffers.buffer2.linum sthl
+pushi 1 over h2b +buffers.buffer2.dslinum sthl
 
 pushp NULL over h2b +buffers.buffer3.buf_contents sthp
 pushi 0 over h2b +buffers.buffer3.size sthl
 pushui 512 over h2b +buffers.buffer3.max_dispchars sthui
 pushi 0 over h2b +buffers.buffer3.offset sthl
 pushi 0 over h2b +buffers.buffer3.disp_start sthl
+pushi 1 over h2b +buffers.buffer3.linum sthl
+pushi 1 over h2b +buffers.buffer3.dslinum sthl
 
 pushp NULL over h2b +buffers.buffer4.buf_contents sthp
 pushi 0 over h2b +buffers.buffer4.size sthl
 pushui 512 over h2b +buffers.buffer4.max_dispchars sthui
 pushi 0 over h2b +buffers.buffer4.offset sthl
 pushi 0 over h2b +buffers.buffer4.disp_start sthl
+pushi 1 over h2b +buffers.buffer4.linum sthl
+pushi 1 over h2b +buffers.buffer4.dslinum sthl
 
 swap
 ret
@@ -120,6 +132,8 @@ pushp write_buffer_continue1 jmp
 
 :dec_disp_start
 ldr3 dup +buffer.offset ldhl swap +buffer.disp_start sthl
+ldr3 dup +buffer.linum ldhl swap +buffer.dslinum sthl
+pushp write_first_half jmp
 
 :write_buffer_continue1
 ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui pushp inc_disp_start jls
@@ -127,11 +141,14 @@ pushp write_first_half jmp
 
 :inc_disp_start
 ldr3 dup +buffer.offset ldhl swap +buffer.disp_start sthl
+ldr3 dup +buffer.linum ldhl swap +buffer.dslinum sthl
 
 :write_first_half
+ldr3 +buffer.dslinum ldhl pushp "[%l] " pushp putfmt call
 ldr3 dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.disp_start ldhl swap addp b2h
-pushp putnstr call
+ldr3 +buffer.dslinum ldhl
+pushp linum_putnstr call
 ldr0 pushi EOF pushp stdout_write_error jeq
 pushp write_posin jmp
 
@@ -146,14 +163,16 @@ ldr3 +buffer.size ldhl pushp write_all jls
 
 ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui subl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
-pushp putnstr call
+ldr3 +buffer.linum ldhl
+pushp linum_putnstr call
 ldr0 pushi EOF pushp stdout_write_error jeq
 pushp write_buffer_end jmp
 
 :write_all
 ldr3 dup +buffer.size ldhl swap +buffer.offset ldhl swap subl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
-pushp putnstr call
+ldr3 +buffer.linum ldhl
+pushp linum_putnstr call
 ldr0 pushi EOF pushp stdout_write_error jeq
 pushp write_buffer_end jmp
 
@@ -164,4 +183,28 @@ ldr0 pushi EOF pushp stdout_write_error jeq
 
 :write_buffer_end
 ret
+
+:linum_putnstr
+str4
+str6
+
+pushi 0 str7 ;this is the loop counter
+:linum_putnstr_loop_until_end
+over ldr7 pushp linum_putnstr_end jeq
+ldr7 over h2b addp
+ldhc dup pushp putchar call
+pushc '\n' pushp linum_putnstr_write_linum_and_continue jeq
+ldr7 pushi 1 addl str7
+pushp linum_putnstr_loop_until_end jmp
+
+:linum_putnstr_write_linum_and_continue
+ldr6 pushi 1 addl str6
+ldr6 pushp "[%l] " pushp putfmt call
+ldr7 pushi 1 addl str7
+pushp linum_putnstr_loop_until_end jmp
+
+:linum_putnstr_end
+pop pop
+
+ldr4 ret
 

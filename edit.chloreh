@@ -47,6 +47,7 @@ pushi 0 str2 ;this is the buffer we're currently working on
 
 :text_editor_loop
 pushp write_buffer call
+pushp write_buffer call
 
 pushc '%' pushp putchar call
 ldr0 pushi EOF pushp allocation_failure jeq
@@ -100,7 +101,8 @@ pushp get_buf_ptr call
 pushp NULL over +buffer.buf_contents dup ldhp pushp flush call sthp
 pushl 0 over +buffer.size sthl
 pushl 0 over +buffer.offset sthl
-pushl 0 swap +buffer.disp_start sthl
+pushl 0 over +buffer.disp_start sthl
+pushl 1 swap +buffer.linum sthl
 
 pushp text_editor_loop_dw jmp
 
@@ -247,7 +249,8 @@ pushp memcpy call
 
 dup +buffer.size ldhl pushi 1 swap subl pushp get_buf_ptr call +buffer.size sthl
 dup +buffer.offset ldhl pushp get_buf_ptr call +buffer.offset sthl
-+buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
+dup +buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
++buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
 
 pushp text_editor_loop_dw jmp
 
@@ -288,6 +291,13 @@ pop
 
 pushp get_buf_ptr call str3
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_f_is_newline jeq
+pushp task_f_continue jmp
+
+:task_f_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_f_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 pushp text_editor_loop_dw jmp
 
@@ -297,6 +307,11 @@ pop
 pushp get_buf_ptr call str3
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_b_is_newline jeq
+pushp text_editor_loop_dw jmp
+
+:task_b_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
 pushp text_editor_loop_dw jmp
 
 :task_m
@@ -307,6 +322,13 @@ pushp get_buf_ptr call str3
 :task_m_loop_until_newline0
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline0_is_newline jeq
+pushp task_m_loop_until_newline0_continue jmp
+
+:task_m_loop_until_newline0_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+
+:task_m_loop_until_newline0_continue
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_m_loop_until_newline1 jeq
 pushp task_m_loop_until_newline0 jmp
@@ -314,6 +336,13 @@ pushp task_m_loop_until_newline0 jmp
 :task_m_loop_until_newline1
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline1_is_newline jeq
+pushp task_m_loop_until_newline1_continue jmp
+
+:task_m_loop_until_newline1_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+
+:task_m_loop_until_newline1_continue
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_m_loop_until_newline2 jeq
 pushp task_m_loop_until_newline1 jmp
@@ -321,6 +350,13 @@ pushp task_m_loop_until_newline1 jmp
 :task_m_loop_until_newline2
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline2_is_newline jeq
+pushp task_m_loop_until_newline2_continue jmp
+
+:task_m_loop_until_newline2_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+
+:task_m_loop_until_newline2_continue
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_m_loop_until_newline3 jeq
 pushp task_m_loop_until_newline2 jmp
@@ -328,6 +364,13 @@ pushp task_m_loop_until_newline2 jmp
 :task_m_loop_until_newline3
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline3_is_newline jeq
+pushp task_m_loop_until_newline3_continue jmp
+
+:task_m_loop_until_newline3_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+
+:task_m_loop_until_newline3_continue
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_m_loop_until_newline4 jeq
 pushp task_m_loop_until_newline3 jmp
@@ -335,6 +378,13 @@ pushp task_m_loop_until_newline3 jmp
 :task_m_loop_until_newline4
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline4_is_newline jeq
+pushp task_m_loop_until_newline4_continue jmp
+
+:task_m_loop_until_newline4_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+
+:task_m_loop_until_newline4_continue
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp text_editor_loop_dw jeq
 pushp task_m_loop_until_newline4 jmp
@@ -346,6 +396,13 @@ pushp get_buf_ptr call str3
 
 :task_comma_loop_until_end
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_comma_loop_until_end_is_newline jeq
+pushp task_comma_loop_until_end_continue jmp
+
+:task_comma_loop_until_end_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_comma_loop_until_end_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 pushp task_comma_loop_until_end jmp
 
@@ -356,6 +413,13 @@ pushp get_buf_ptr call str3
 
 :task_dot_loop_until_beginning
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_dot_loop_until_beginning_is_newline jeq
+pushp task_dot_loop_until_beginning_continue jmp
+
+:task_dot_loop_until_beginning_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_dot_loop_until_beginning_continue
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
 pushp task_dot_loop_until_beginning jmp
 
@@ -367,6 +431,13 @@ pushp get_buf_ptr call str3
 :task_semicolon_loop_until_space
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_semicolon_loop_until_space_is_newline jeq
+pushp task_semicolon_loop_until_space_continue jmp
+
+:task_semicolon_loop_until_space_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+
+:task_semicolon_loop_until_space_continue
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushp isspace call pushp text_editor_loop_dw jnz
 pushp task_semicolon_loop_until_space jmp
@@ -379,6 +450,13 @@ pushp get_buf_ptr call str3
 :task_p_loop_until_newline
 ldr3 +buffer.offset ldhl pushi 0 pushp text_editor_loop_dw jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_p_loop_until_newline_is_newline jeq
+pushp task_p_loop_until_newline_continue jmp
+
+:task_p_loop_until_newline_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+
+:task_p_loop_until_newline_continue
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp text_editor_loop_dw jeq
 pushp task_p_loop_until_newline jmp
@@ -390,6 +468,13 @@ pushp get_buf_ptr call str3
 
 :task_v_loop_until_newline0
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline0_is_newline jeq
+pushp task_v_loop_until_newline0_continue jmp
+
+:task_v_loop_until_newline0_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_v_loop_until_newline0_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline1 jeq
@@ -397,6 +482,13 @@ pushp task_v_loop_until_newline0 jmp
 
 :task_v_loop_until_newline1
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline1_is_newline jeq
+pushp task_v_loop_until_newline1_continue jmp
+
+:task_v_loop_until_newline1_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_v_loop_until_newline1_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline2 jeq
@@ -404,6 +496,13 @@ pushp task_v_loop_until_newline1 jmp
 
 :task_v_loop_until_newline2
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline2_is_newline jeq
+pushp task_v_loop_until_newline2_continue jmp
+
+:task_v_loop_until_newline2_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_v_loop_until_newline2_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline3 jeq
@@ -411,6 +510,13 @@ pushp task_v_loop_until_newline2 jmp
 
 :task_v_loop_until_newline3
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline3_is_newline jeq
+pushp task_v_loop_until_newline3_continue jmp
+
+:task_v_loop_until_newline3_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_v_loop_until_newline3_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_v_loop_until_newline4 jeq
@@ -418,6 +524,13 @@ pushp task_v_loop_until_newline3 jmp
 
 :task_v_loop_until_newline4
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline4_is_newline jeq
+pushp task_v_loop_until_newline4_continue jmp
+
+:task_v_loop_until_newline4_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_v_loop_until_newline4_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp text_editor_loop_dw jeq
@@ -444,12 +557,19 @@ ldr3 +buffer.offset ldhl str4
 
 pushp dec_buf call
 
-:task_k_loop_until_space
+:task_k_loop_until_newline
 ldr4 ldr3 +buffer.size ldhl pushp task_k_write_rem jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_k_loop_until_newline_is_newline jeq
+pushp task_k_loop_until_newline_continue jmp
+
+:task_k_loop_until_newline_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_k_loop_until_newline_continue
 ldr4 pushi 1 addl str4
 ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_k_write_rem jeq
-pushp task_k_loop_until_space jmp
+pushp task_k_loop_until_newline jmp
 
 :task_k_write_rem
 pushp inc_buf call
@@ -532,6 +652,13 @@ pushp get_buf_ptr call str3
 
 :task_z_loop_until_space
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_z_loop_until_space_is_newline jeq
+pushp task_z_loop_until_space_continue jmp
+
+:task_z_loop_until_space_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_z_loop_until_space_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushp isspace call pushp text_editor_loop_dw jnz
@@ -544,6 +671,13 @@ pushp get_buf_ptr call str3
 
 :task_n_loop_until_newline
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp text_editor_loop_dw jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_n_loop_until_newline_is_newline jeq
+pushp task_n_loop_until_newline_continue jmp
+
+:task_n_loop_until_newline_is_newline
+ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+
+:task_n_loop_until_newline_continue
 ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
 ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp text_editor_loop_dw jeq
@@ -623,9 +757,8 @@ swap dup +buffer.offset ldhl swap +buffer.size ldhl subl
 pushp memcpy call
 
 dup dup +buffer.offset ldhl swap +buffer.size ldhl subl ldr3 addl ldr4 +buffer.size sthl
-
 dup +buffer.disp_start ldhl ldr4 +buffer.disp_start sthl
-
+dup +buffer.linum ldhl ldr4 +buffer.linum sthl
 ldr3 ldr4 +buffer.offset sthl
 
 pushp inc_buf call

@@ -791,6 +791,7 @@ pushp text_editor_loop_dw jmp
 :get_integer_from_stdin
 str3
 pushi 0
+
 :get_integer_from_stdin_loop
 pushp getchar call
 dup pushi EOF pushp get_integer_from_stdin_end jeq

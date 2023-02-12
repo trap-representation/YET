@@ -45,16 +45,35 @@ pushp allocate_bufs call
 str5 ;save the pointer to the `buffers' struct that we allocated in gpr 5
 pushi 0 str2 ;this is the buffer we're currently working on
 
+pushi 0 swap ;this is the repeat counter
+pushi EOF swap
+
 :text_editor_loop
-pushp write_buffer call
 pushp write_buffer call
 
 pushc '%' pushp putchar call
 ldr0 pushi EOF pushp allocation_failure jeq
+pushp get_from_stdin jmp
 
 :text_editor_loop_dw
+over pushi EOF pushp repeat_task jne
+
+:repeat_task
+str3
+swap dup pushp repeat_count_zero jz
+pushi 1 swap subl
+swap
+ldr3
+over
+pushp do_task jmp
+
+:repeat_count_zero
+swap pop pushi EOF ldr3
+
+:get_from_stdin
 pushp getchar call
 
+:do_task
 dup pushc 'f' pushp task_f jeq
 dup pushc 'b' pushp task_b jeq
 dup pushc 'l' pushp task_l jeq
@@ -68,6 +87,7 @@ dup pushc 'c' pushp task_c jeq
 dup pushc 'y' pushp task_y jeq
 dup pushc 'k' pushp task_k jeq
 dup pushc 'z' pushp task_z jeq
+dup pushc 'e' pushp task_e jeq
 dup pushc ';' pushp task_semicolon jeq
 dup pushc 'v' pushp task_v jeq
 dup pushc '.' pushp task_dot jeq
@@ -93,6 +113,15 @@ pushp "YET: no task assigned to character\n" pushp putstre call
 
 pushp text_editor_loop_dw jmp
 
+:task_e
+pop
+
+pushp get_integer_from_stdin call
+;integer character_that_wasn't_read
+str3 swap ldr3 swap
+
+pushp text_editor_loop_dw jmp
+
 :task_c
 pop
 
@@ -109,8 +138,7 @@ pushp text_editor_loop_dw jmp
 :task_at
 pop
 
-pushp getui call
-ldr0 pushi 1 pushp not_an_integer jne
+pushp get_integer_from_stdin call pop
 ldr5 +buffers.buffer0.max_dispchars h2b over swap sthui
 ldr5 +buffers.buffer1.max_dispchars h2b over swap sthui
 ldr5 +buffers.buffer2.max_dispchars h2b over swap sthui
@@ -123,16 +151,9 @@ pushp text_editor_loop_dw jmp
 :task_dollar
 pop
 
-pushp getui call
-ldr0 pushi 1 pushp not_an_integer jne
+pushp get_integer_from_stdin call pop
 pushp get_buf_ptr call +buffer.max_dispchars sthui
 
-pushp text_editor_loop_dw jmp
-
-:not_an_integer
-pop
-
-pushp "YET: expected an integer\n" pushp putstre call
 pushp text_editor_loop_dw jmp
 
 :task_l
@@ -766,4 +787,28 @@ pushp inc_buf call
 pop
 
 pushp text_editor_loop_dw jmp
+
+
+:get_integer_from_stdin
+str3
+pushi 0
+:get_integer_from_stdin_loop
+pushp getchar call
+dup pushi EOF pushp get_integer_from_stdin_end jeq
+
+pushc '0' over pushp maybe_integer jge
+pushp get_integer_from_stdin_end jmp
+
+:maybe_integer
+pushc '9' over pushp is_integer jle
+pushp get_integer_from_stdin_end jmp
+
+:is_integer
+pushc '0' swap subi
+swap pushi 10 mull
+addl
+pushp get_integer_from_stdin_loop jmp
+
+:get_integer_from_stdin_end
+ldr3 ret
 

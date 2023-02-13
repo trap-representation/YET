@@ -144,10 +144,11 @@ ldr3 dup +buffer.offset ldhl swap +buffer.disp_start sthl
 ldr3 dup +buffer.linum ldhl swap +buffer.dslinum sthl
 
 :write_first_half
-ldr3 +buffer.dslinum ldhl pushp "[%l] " pushp putfmt call
+ldr3 dup dup +buffer.linum ldhl swap +buffer.dslinum ldhl subl swap +buffer.dslinum ldhl pushp "[%l:%l] " pushp putfmt call
 ldr3 dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.disp_start ldhl swap addp b2h
 ldr3 +buffer.dslinum ldhl
+ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
 ldr0 pushi EOF pushp stdout_write_error jeq
 pushp write_posin jmp
@@ -164,6 +165,7 @@ ldr3 +buffer.size ldhl pushp write_all jls
 ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui subl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
 ldr3 +buffer.linum ldhl
+ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
 ldr0 pushi EOF pushp stdout_write_error jeq
 pushp write_buffer_end jmp
@@ -171,6 +173,7 @@ pushp write_buffer_end jmp
 :write_all
 ldr3 dup +buffer.size ldhl swap +buffer.offset ldhl swap subl
 ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
+ldr3 +buffer.linum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
 ldr0 pushi EOF pushp stdout_write_error jeq
@@ -185,8 +188,21 @@ ldr0 pushi EOF pushp stdout_write_error jeq
 ret
 
 :linum_putnstr
-str4
-str6
+;offset contents linum rel_linum retaddr
+str4 ;offset contents linum rel_linum
+str7 ;offset contents linum
+swap ;offset linum contents
+ldr4 ;offset linum contents retaddr
+swap ;offset linum retaddr contents
+str4 ;offset linum retaddr
+swap ;offset retaddr linum
+ldr4 ;offset retaddr linum contents
+swap ;offset retaddr contents linum
+str6 ;offset retaddr contents
+str4 ;offset retaddr
+swap ;retaddr offset
+ldr4 ;retaddr offset contents
+ldr7 str4
 
 pushi 0 str7 ;this is the loop counter
 :linum_putnstr_loop_until_end
@@ -199,12 +215,12 @@ pushp linum_putnstr_loop_until_end jmp
 
 :linum_putnstr_write_linum_and_continue
 ldr6 pushi 1 addl str6
-ldr6 pushp "[%l] " pushp putfmt call
+ldr4 ldr6 subl ldr6 pushp "[%l:%l] " pushp putfmt call
 ldr7 pushi 1 addl str7
 pushp linum_putnstr_loop_until_end jmp
 
 :linum_putnstr_end
 pop pop
 
-ldr4 ret
+ret
 

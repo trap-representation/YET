@@ -81,6 +81,7 @@ dup pushc 'l' pushp task_l jeq
 dup pushc 'n' pushp task_n jeq
 dup pushc 'p' pushp task_p jeq
 dup pushc 'd' pushp task_d jeq
+dup pushc '#' pushp task_pound jeq
 dup pushc 'u' pushp task_u jeq
 dup pushc 'r' pushp task_r jeq
 dup pushc 'm' pushp task_m jeq
@@ -272,7 +273,8 @@ pushp memcpy call
 dup +buffer.size ldhl pushi 1 swap subl pushp get_buf_ptr call +buffer.size sthl
 dup +buffer.offset ldhl pushp get_buf_ptr call +buffer.offset sthl
 dup +buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
-+buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
+dup +buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
++buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
 
 pushp text_editor_loop_dw jmp
 
@@ -304,7 +306,9 @@ pushp memcpy call
 
 dup +buffer.size ldhl pushi 1 addl pushp get_buf_ptr call +buffer.size sthl
 dup +buffer.offset ldhl pushp get_buf_ptr call +buffer.offset sthl
-+buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
+dup +buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
+dup +buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
++buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
 
 pushp text_editor_loop_dw jmp
 
@@ -609,9 +613,20 @@ pushp get_buf_ptr call
 
 ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.size sthl
 ldr3 +buffer.offset ldhl over +buffer.offset sthl
-ldr3 +buffer.disp_start ldhl swap +buffer.disp_start sthl
+ldr3 +buffer.disp_start ldhl over +buffer.disp_start sthl
+ldr3 +buffer.linum ldhl over +buffer.linum sthl
+ldr3 +buffer.dslinum ldhl swap +buffer.dslinum sthl
 
 pushp text_editor_loop_dw jmp
+
+:task_pound
+pop
+
+:task_pound_read_stdin_loop
+pushp getchar call str3
+ldr3 pushi EOF pushp text_editor_loop_dw jeq
+ldr3 pushc '\n' pushp text_editor_loop_dw jeq
+pushp task_pound_read_stdin_loop jmp
 
 :task_y
 pop
@@ -660,7 +675,9 @@ pushp get_buf_ptr call
 
 ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.size sthl
 ldr3 +buffer.offset ldhl over +buffer.offset sthl
-ldr3 +buffer.disp_start ldhl swap +buffer.disp_start sthl
+ldr3 +buffer.disp_start ldhl over +buffer.disp_start sthl
+ldr3 +buffer.linum ldhl over +buffer.linum sthl
+ldr3 +buffer.dslinum ldhl swap +buffer.dslinum sthl
 
 pushp text_editor_loop_dw jmp
 

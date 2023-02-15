@@ -127,8 +127,12 @@ pushp get_command_character jmp
 :task_c
 pop
 
+pushp get_buf_ptr call
+
 pushp inc_buf call
 pushp get_buf_ptr call
+
+swap +buffer.max_dispchars ldhui over +buffer.max_dispchars sthui
 pushp NULL over +buffer.buf_contents dup ldhp pushp flush call sthp
 pushl 0 over +buffer.size sthl
 pushl 0 over +buffer.offset sthl
@@ -274,7 +278,8 @@ dup +buffer.size ldhl pushi 1 swap subl pushp get_buf_ptr call +buffer.size sthl
 dup +buffer.offset ldhl pushp get_buf_ptr call +buffer.offset sthl
 dup +buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
 dup +buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
-+buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
+dup +buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
++buffer.max_dispchars ldhui pushp get_buf_ptr call +buffer.max_dispchars sthui
 
 pushp get_command_character jmp
 
@@ -308,7 +313,8 @@ dup +buffer.size ldhl pushi 1 addl pushp get_buf_ptr call +buffer.size sthl
 dup +buffer.offset ldhl pushp get_buf_ptr call +buffer.offset sthl
 dup +buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
 dup +buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
-+buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
+dup +buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
++buffer.max_dispchars ldhui pushp get_buf_ptr call +buffer.max_dispchars sthui
 
 pushp get_command_character jmp
 
@@ -615,7 +621,8 @@ ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.
 ldr3 +buffer.offset ldhl over +buffer.offset sthl
 ldr3 +buffer.disp_start ldhl over +buffer.disp_start sthl
 ldr3 +buffer.linum ldhl over +buffer.linum sthl
-ldr3 +buffer.dslinum ldhl swap +buffer.dslinum sthl
+ldr3 +buffer.dslinum ldhl over +buffer.dslinum sthl
+ldr3 +buffer.max_dispchars ldhui swap +buffer.max_dispchars sthui
 
 pushp get_command_character jmp
 
@@ -677,7 +684,8 @@ ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.
 ldr3 +buffer.offset ldhl over +buffer.offset sthl
 ldr3 +buffer.disp_start ldhl over +buffer.disp_start sthl
 ldr3 +buffer.linum ldhl over +buffer.linum sthl
-ldr3 +buffer.dslinum ldhl swap +buffer.dslinum sthl
+ldr3 +buffer.dslinum ldhl over +buffer.dslinum sthl
+ldr3 +buffer.max_dispchars ldhui swap +buffer.max_dispchars sthui
 
 pushp get_command_character jmp
 
@@ -795,6 +803,7 @@ pushp memcpy call
 dup dup +buffer.offset ldhl swap +buffer.size ldhl subl ldr3 addl ldr4 +buffer.size sthl
 dup +buffer.disp_start ldhl ldr4 +buffer.disp_start sthl
 dup +buffer.linum ldhl ldr4 +buffer.linum sthl
+dup +buffer.max_dispchars ldhui ldr4 +buffer.max_dispchars sthui
 ldr3 ldr4 +buffer.offset sthl
 
 pushp inc_buf call

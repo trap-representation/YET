@@ -1,5 +1,0 @@
-c #clear the entire buffer
-:int main(void){
-~n #write a newline character to the buffer, and move the current edit position to the next newline character (which is the one that we just wrote)
-:}
-wq #write and quit

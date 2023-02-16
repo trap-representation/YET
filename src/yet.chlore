@@ -34,8 +34,6 @@ pushi 2
 pushp getargc call
 pushp write_program_information_and_quit jls
 
-pushp mem_init call ;initialize the heap
-
 pushl MAX_PATHSIZE pushi 1 addl
 pushp aseg call
 ldr0 pushp allocation_failure jnz ;check if the allocation was successful

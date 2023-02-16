@@ -450,7 +450,8 @@ ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc p
 pushp task_dot_loop_until_beginning jmp
 
 :task_dot_loop_until_beginning_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+pushp task_dot_loop_until_beginning jmp
 
 :task_semicolon
 pop

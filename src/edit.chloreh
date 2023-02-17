@@ -137,7 +137,8 @@ pushp NULL over +buffer.buf_contents dup ldhp pushp flush call sthp
 pushl 0 over +buffer.size sthl
 pushl 0 over +buffer.offset sthl
 pushl 0 over +buffer.disp_start sthl
-pushl 1 swap +buffer.linum sthl
+pushl 1 over +buffer.linum sthl
+pushl 1 swap +buffer.dslinum sthl
 
 pushp get_command_character jmp
 
@@ -804,6 +805,7 @@ pushp memcpy call
 dup dup +buffer.offset ldhl swap +buffer.size ldhl subl ldr3 addl ldr4 +buffer.size sthl
 dup +buffer.disp_start ldhl ldr4 +buffer.disp_start sthl
 dup +buffer.linum ldhl ldr4 +buffer.linum sthl
+dup +buffer.dslinum ldhl ldr4 +buffer.dslinum sthl
 dup +buffer.max_dispchars ldhui ldr4 +buffer.max_dispchars sthui
 ldr3 ldr4 +buffer.offset sthl
 

@@ -590,13 +590,6 @@ pushp dec_buf call
 
 :task_k_loop_until_newline
 ldr4 ldr3 +buffer.size ldhl pushp task_k_write_rem jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_k_loop_until_newline_is_newline jeq
-pushp task_k_loop_until_newline_continue jmp
-
-:task_k_loop_until_newline_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
-
-:task_k_loop_until_newline_continue
 ldr4 pushi 1 addl str4
 ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
 ldhc pushc '\n' pushp task_k_write_rem jeq

@@ -168,6 +168,10 @@ ldr3 +buffer.linum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
 ldr0 pushi EOF pushp stdout_write_error jeq
+
+pushp "\n[...]\n" pushp putstr call
+ldr0 pushi EOF pushp stdout_write_error jeq
+
 pushp write_buffer_end jmp
 
 :write_all

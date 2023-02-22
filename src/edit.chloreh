@@ -51,9 +51,8 @@ pushi EOF swap
 :write_buffer_and_continue
 pushp write_buffer call
 
-pushc '%' pushp putchar call
-ldr0 pushi EOF pushp allocation_failure jeq
-pushp get_from_stdin jmp
+pushp "\n%" pushp putstr call
+ldr0 pushi EOF pushp stdout_write_error jeq
 
 :get_command_character
 over pushi EOF pushp repeat_task jne

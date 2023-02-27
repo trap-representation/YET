@@ -1,0 +1,230 @@
+struct buffer
+  l: size
+  l: offset
+  l: linum
+  l: disp_start
+  l: dslinum
+  ui: max_dispchars
+  p: buf_contents!
+
+struct buffers
+  buffer: buffer0
+  buffer: buffer1
+  buffer: buffer2
+  buffer: buffer3
+  buffer: buffer4!
+
+set BUF_N 5
+
+:inc_buf
+pushui BUF_N ldr2 pushui 1 addui remui str2
+ret
+
+:dec_buf
+pushui BUF_N pushui 1 ldr2 subl reml pushui BUF_N addl pushui BUF_N swap remui str2
+ret
+
+:get_buf_ptr
+ldr2
+dup pushui 0 pushp is_buf0 jeq
+dup pushui 1 pushp is_buf1 jeq
+dup pushui 2 pushp is_buf2 jeq
+dup pushui 3 pushp is_buf3 jeq
+dup pushui 4 pushp is_buf4 jeq
+pushp unexpected_buffer jmp
+
+:is_buf0
+pop ldr5 h2b +buffers.buffer0 swap ret
+
+:is_buf1
+pop ldr5 h2b +buffers.buffer1 swap ret
+
+:is_buf2
+pop ldr5 h2b +buffers.buffer2 swap ret
+
+:is_buf3
+pop ldr5 h2b +buffers.buffer3 swap ret
+
+:is_buf4
+pop ldr5 h2b +buffers.buffer4 swap ret
+
+:allocate_bufs
+swap
+
+sizeof buffers pushp aseg call ;allocate the buffers
+ldr0 pushp allocation_failure jnz ;check if allocation was successful
+
+sizeof buffer pushp aseg call
+ldr0 pushp allocation_failure jnz
+over h2b +buffers.buffer0 sthp
+
+sizeof buffer pushp aseg call
+ldr0 pushp allocation_failure jnz
+over h2b +buffers.buffer1 sthp
+
+sizeof buffer pushp aseg call
+ldr0 pushp allocation_failure jnz
+over h2b +buffers.buffer2 sthp
+
+sizeof buffer pushp aseg call
+ldr0 pushp allocation_failure jnz
+over h2b +buffers.buffer3 sthp
+
+sizeof buffer pushp aseg call
+ldr0 pushp allocation_failure jnz
+over h2b +buffers.buffer4 sthp
+
+swap over h2b +buffers.buffer0.buf_contents sthp
+ldr3 over h2b +buffers.buffer0.size sthl
+pushui 512 over h2b +buffers.buffer0.max_dispchars sthui
+pushi 0 over h2b +buffers.buffer0.offset sthl
+pushi 0 over h2b +buffers.buffer0.disp_start sthl
+pushi 1 over h2b +buffers.buffer0.linum sthl
+pushi 1 over h2b +buffers.buffer0.dslinum sthl
+
+pushp NULL over h2b +buffers.buffer1.buf_contents sthp
+pushi 0 over h2b +buffers.buffer1.size sthl
+pushui 512 over h2b +buffers.buffer1.max_dispchars sthui
+pushi 0 over h2b +buffers.buffer1.offset sthl
+pushi 0 over h2b +buffers.buffer1.disp_start sthl
+pushi 1 over h2b +buffers.buffer1.linum sthl
+pushi 1 over h2b +buffers.buffer1.dslinum sthl
+
+pushp NULL over h2b +buffers.buffer2.buf_contents sthp
+pushi 0 over h2b +buffers.buffer2.size sthl
+pushui 512 over h2b +buffers.buffer2.max_dispchars sthui
+pushi 0 over h2b +buffers.buffer2.offset sthl
+pushi 0 over h2b +buffers.buffer2.disp_start sthl
+pushi 1 over h2b +buffers.buffer2.linum sthl
+pushi 1 over h2b +buffers.buffer2.dslinum sthl
+
+pushp NULL over h2b +buffers.buffer3.buf_contents sthp
+pushi 0 over h2b +buffers.buffer3.size sthl
+pushui 512 over h2b +buffers.buffer3.max_dispchars sthui
+pushi 0 over h2b +buffers.buffer3.offset sthl
+pushi 0 over h2b +buffers.buffer3.disp_start sthl
+pushi 1 over h2b +buffers.buffer3.linum sthl
+pushi 1 over h2b +buffers.buffer3.dslinum sthl
+
+pushp NULL over h2b +buffers.buffer4.buf_contents sthp
+pushi 0 over h2b +buffers.buffer4.size sthl
+pushui 512 over h2b +buffers.buffer4.max_dispchars sthui
+pushi 0 over h2b +buffers.buffer4.offset sthl
+pushi 0 over h2b +buffers.buffer4.disp_start sthl
+pushi 1 over h2b +buffers.buffer4.linum sthl
+pushi 1 over h2b +buffers.buffer4.dslinum sthl
+
+swap
+ret
+
+:write_buffer
+pushc 0x1B pushp putchar call
+pushp "[2J" pushp putstr call ;clear the entire screen
+pushc 0x1B pushp putchar call
+pushp "[H" pushp putstr call ;move the cursor to the top left corner
+
+pushp get_buf_ptr call str3
+
+ldr3 +buffer.buf_contents ldhp pushp NULL pushp write_buffer_buf_is_null jeq
+
+ldr3 dup +buffer.disp_start ldhl swap +buffer.offset ldhl pushp dec_disp_start jls
+pushp write_buffer_continue1 jmp
+
+:dec_disp_start
+ldr3 dup +buffer.offset ldhl swap +buffer.disp_start sthl
+ldr3 dup +buffer.linum ldhl swap +buffer.dslinum sthl
+pushp write_first_half jmp
+
+:write_buffer_continue1
+ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui pushp inc_disp_start jls
+pushp write_first_half jmp
+
+:inc_disp_start
+ldr3 dup +buffer.offset ldhl swap +buffer.disp_start sthl
+ldr3 dup +buffer.linum ldhl swap +buffer.dslinum sthl
+
+:write_first_half
+ldr3 dup dup +buffer.linum ldhl swap +buffer.dslinum ldhl subl swap +buffer.dslinum ldhl pushp "[%l:%l] " pushp putfmt call
+ldr3 dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.disp_start ldhl swap addp b2h
+ldr3 +buffer.dslinum ldhl
+ldr3 +buffer.linum ldhl
+pushp linum_putnstr call
+ldr0 pushi EOF pushp stdout_write_error jeq
+pushp write_posin jmp
+
+:write_posin
+pushc '|'
+pushp putchar call
+ldr0 pushi EOF pushp stdout_write_error jeq
+
+ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui subl
+ldr3 +buffer.offset ldhl addl
+ldr3 +buffer.size ldhl pushp write_all jls
+
+ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui subl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
+ldr3 +buffer.linum ldhl
+ldr3 +buffer.linum ldhl
+pushp linum_putnstr call
+ldr0 pushi EOF pushp stdout_write_error jeq
+
+pushp "\n[...]" pushp putstr call
+ldr0 pushi EOF pushp stdout_write_error jeq
+
+pushp write_buffer_end jmp
+
+:write_all
+ldr3 dup +buffer.size ldhl swap +buffer.offset ldhl swap subl
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
+ldr3 +buffer.linum ldhl
+ldr3 +buffer.linum ldhl
+pushp linum_putnstr call
+ldr0 pushi EOF pushp stdout_write_error jeq
+pushp write_buffer_end jmp
+
+:write_buffer_buf_is_null
+pushc '|'
+pushp putchar call
+ldr0 pushi EOF pushp stdout_write_error jeq
+
+:write_buffer_end
+ret
+
+:linum_putnstr
+;offset contents linum rel_linum retaddr
+str4 ;offset contents linum rel_linum
+str7 ;offset contents linum
+swap ;offset linum contents
+ldr4 ;offset linum contents retaddr
+swap ;offset linum retaddr contents
+str4 ;offset linum retaddr
+swap ;offset retaddr linum
+ldr4 ;offset retaddr linum contents
+swap ;offset retaddr contents linum
+str6 ;offset retaddr contents
+str4 ;offset retaddr
+swap ;retaddr offset
+ldr4 ;retaddr offset contents
+ldr7 str4
+
+pushi 0 str7 ;this is the loop counter
+:linum_putnstr_loop_until_end
+over ldr7 pushp linum_putnstr_end jeq
+ldr7 over h2b addp
+ldhc dup pushp putchar call
+pushc '\n' pushp linum_putnstr_write_linum_and_continue jeq
+ldr7 pushi 1 addl str7
+pushp linum_putnstr_loop_until_end jmp
+
+:linum_putnstr_write_linum_and_continue
+ldr6 pushi 1 addl str6
+ldr4 ldr6 subl ldr6 pushp "[%l:%l] " pushp putfmt call
+ldr7 pushi 1 addl str7
+pushp linum_putnstr_loop_until_end jmp
+
+:linum_putnstr_end
+pop pop
+
+ret
+

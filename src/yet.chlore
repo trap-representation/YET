@@ -14,19 +14,19 @@
 ;    You should have received a copy of the GNU General Public License
 ;    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import "stdlib.chloreh"
-import "io.chloreh"
-import "alloc2.chloreh"
-import "stddef.chloreh"
-import "string.chloreh"
-import "sys.chloreh"
+import "stdlib.chlore"
+import "io.chlore"
+import "alloc2.chlore"
+import "stddef.chlore"
+import "string.chlore"
+import "sys.chlore"
 
 set BUF_SIZE 40
 
-import "./buffers.chloreh"
-import "./clean_up_err.chloreh"
-import "./edit.chloreh"
-import "./program_info.chloreh"
+import "buffers.chlore"
+import "clean_up_err.chlore"
+import "edit.chlore"
+import "program_info.chlore"
 
 :main
 

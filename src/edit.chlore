@@ -144,7 +144,10 @@ pushp get_command_character jmp
 :task_at
 pop
 
-pushp get_integer_from_stdin call pop
+pushp get_integer_from_stdin call swap str4
+pushi 1 swap ;1 character_that_wasn't_read
+str3 swap ldr3 swap
+ldr4
 ldr5 +buffers.buffer0.max_dispchars h2b over swap sthui
 ldr5 +buffers.buffer1.max_dispchars h2b over swap sthui
 ldr5 +buffers.buffer2.max_dispchars h2b over swap sthui
@@ -157,7 +160,10 @@ pushp get_command_character jmp
 :task_dollar
 pop
 
-pushp get_integer_from_stdin call pop
+pushp get_integer_from_stdin call swap str4
+pushi 1 swap ;1 character_that_wasn't_read
+str3 swap ldr3 swap
+ldr4
 pushp get_buf_ptr call +buffer.max_dispchars sthui
 
 pushp get_command_character jmp

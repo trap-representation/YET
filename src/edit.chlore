@@ -754,7 +754,7 @@ swap pop ;src dest -- dest
 
 pushl BUF_SIZE pushi 1 addl
 pushp aseg call ;allocate a buffer of size BUF_SIZE bytes
-;we will be using this to read the file in chunks
+;we will be using this to read stdin in chunks
 ldr0 pushp allocation_failure jnz ;check if the allocation was successful
 
 :task_colon_read_stdin_loop

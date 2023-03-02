@@ -54,26 +54,6 @@ swap
 sizeof buffers pushp aseg call ;allocate the buffers
 ldr0 pushp allocation_failure jnz ;check if allocation was successful
 
-sizeof buffer pushp aseg call
-ldr0 pushp allocation_failure jnz
-over h2b +buffers.buffer0 sthp
-
-sizeof buffer pushp aseg call
-ldr0 pushp allocation_failure jnz
-over h2b +buffers.buffer1 sthp
-
-sizeof buffer pushp aseg call
-ldr0 pushp allocation_failure jnz
-over h2b +buffers.buffer2 sthp
-
-sizeof buffer pushp aseg call
-ldr0 pushp allocation_failure jnz
-over h2b +buffers.buffer3 sthp
-
-sizeof buffer pushp aseg call
-ldr0 pushp allocation_failure jnz
-over h2b +buffers.buffer4 sthp
-
 swap over h2b +buffers.buffer0.buf_contents sthp
 ldr3 over h2b +buffers.buffer0.size sthl
 pushui 512 over h2b +buffers.buffer0.max_dispchars sthui

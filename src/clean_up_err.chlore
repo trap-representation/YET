@@ -31,14 +31,14 @@ pushp end_error jmp
 
 :read_file_allocation_failure
 pushp "YET: allocation failure\n" pushp putstre call
-pushp flush call pushp flush call
+pop call pushp flush call pushp flush call
 ldr2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
 
 :read_file_read_failure
 pushp "YET: failed to read from input\n" pushp putstre call
-pop pushp flush call pushp flush call
+pop pushp flush call pushp flush call pushp flush call
 ldr2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
@@ -57,14 +57,14 @@ pushp end_error jmp
 
 :task_colon_allocation_failure
 pushp "YET: allocation failure\n" pushp putstre call
-pushp flush call pushp flush call
+pop call pushp flush call pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
 :task_colon_stdin_read_failure
 pushp "YET: failed to read from stdin\n" pushp putstre call
-pop pushp flush call pushp flush call
+pop pushp flush call pushp flush call pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp

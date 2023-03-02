@@ -48,14 +48,14 @@ pushp openf call
 dup pushi -1 pushp open_failure_rd jeq
 str2 ;save the file descriptor in gpr 2
 
-pushp flush call
-
 pushp read_file jmp
 
 :end_error
 pushi 1 hltr
 
 :quit_gracefully
+pop
+pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 hlt

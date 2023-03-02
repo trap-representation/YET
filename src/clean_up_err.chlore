@@ -23,20 +23,22 @@ pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
-:stdin_read_error
+:stdin_read_failure
 pushp "YET: failed to read from stdin\n" pushp putstre call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
-:allocation_failure_f2
+:read_file_allocation_failure
 pushp "YET: allocation failure\n" pushp putstre call
+pushp flush call pushp flush call
 ldr2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
 
-:read_failure_f2
+:read_file_read_failure
 pushp "YET: failed to read from input\n" pushp putstre call
+pop pushp flush call pushp flush call
 ldr2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
@@ -47,12 +49,25 @@ pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
-:stdout_write_error
+:stdout_write_failure
 pushp "YET: failed to write to stdout\n" pushp putstre call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
+:task_colon_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pushp flush call pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_colon_stdin_read_failure
+pushp "YET: failed to read from stdin\n" pushp putstre call
+pop pushp flush call pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
 
 :flush_bufs
 ldr5 h2b +buffers.buffer0.buf_contents ldhp pushp flush call

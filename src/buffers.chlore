@@ -130,13 +130,13 @@ ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.disp_start ldhl swap addp b2
 ldr3 +buffer.dslinum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
-ldr0 pushi EOF pushp stdout_write_error jeq
+ldr0 pushi EOF pushp stdout_write_failure jeq
 pushp write_posin jmp
 
 :write_posin
 pushc '|'
 pushp putchar call
-ldr0 pushi EOF pushp stdout_write_error jeq
+ldr0 pushi EOF pushp stdout_write_failure jeq
 
 ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui subl
 ldr3 +buffer.offset ldhl addl
@@ -147,10 +147,10 @@ ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
 ldr3 +buffer.linum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
-ldr0 pushi EOF pushp stdout_write_error jeq
+ldr0 pushi EOF pushp stdout_write_failure jeq
 
 pushp "\n[...]" pushp putstr call
-ldr0 pushi EOF pushp stdout_write_error jeq
+ldr0 pushi EOF pushp stdout_write_failure jeq
 
 pushp write_buffer_end jmp
 
@@ -160,13 +160,13 @@ ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
 ldr3 +buffer.linum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
-ldr0 pushi EOF pushp stdout_write_error jeq
+ldr0 pushi EOF pushp stdout_write_failure jeq
 pushp write_buffer_end jmp
 
 :write_buffer_buf_is_null
 pushc '|'
 pushp putchar call
-ldr0 pushi EOF pushp stdout_write_error jeq
+ldr0 pushi EOF pushp stdout_write_failure jeq
 
 :write_buffer_end
 ret

@@ -17,6 +17,7 @@
 import "stdlib.chlore"
 import "io.chlore"
 import "alloc2.chlore"
+;import "/usr/local/include/memchk.chlore" ;uncomment this line and comment out the previous line to use the allocator provided by the `memchk' library instead of the one that's provided by the standard library for detecting memory leaks
 import "stddef.chlore"
 import "string.chlore"
 import "sys.chlore"

@@ -16,10 +16,11 @@
 
 import "stdlib.chlore"
 import "io.chlore"
-import "alloc2.chlore"
-;import "/usr/local/include/memchk.chlore" ;uncomment this line and comment out the previous line to use the allocator provided by the `memchk' library instead of the one that's provided by the standard library for detecting memory leaks
+;import "alloc2.chlore"
+import "/usr/local/include/memchk.chlore" ;uncomment this line and comment out the previous line to use the allocator provided by the `memchk' library instead of the one that's provided by the standard library for detecting memory leaks
 import "stddef.chlore"
 import "string.chlore"
+import "types.chlore"
 
 set BUF_SIZE 40
 
@@ -36,7 +37,7 @@ pushp write_program_information_and_quit jls
 
 pushl MAX_PATHSIZE pushi 1 addl
 pushp aseg call
-ldr0 pushp allocation_failure jnz ;check if the allocation was successful
+ldr0 pushp main_allocation_failure jnz ;check if the allocation was successful
 
 dup dup dup
 pushi 1
@@ -46,9 +47,9 @@ pushp getargv call
 pushi O_RDONLY
 pushp openf call
 dup pushi -1 pushp open_failure_rd jeq
-str2 ;save the file descriptor in gpr 2
+str2 ;save the input file descriptor in gpr 2
 
-pushp read_file jmp
+pushp read_input jmp
 
 :end_error
 pushi 1 hltr

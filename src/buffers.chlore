@@ -52,7 +52,7 @@ pop ldr5 h2b +buffers.buffer4 swap ret
 swap
 
 sizeof buffers pushp aseg call ;allocate the buffers
-ldr0 pushp allocation_failure jnz ;check if allocation was successful
+ldr0 pushp allocate_bufs_allocation_failure jnz ;check if allocation was successful
 
 swap over h2b +buffers.buffer0.buf_contents sthp
 ldr3 over h2b +buffers.buffer0.size sthl

@@ -1,42 +1,184 @@
-:allocation_failure
+:main_allocation_failure
 pushp "YET: allocation failure\n" pushp putstre call
+pop
+pushp mem_close call
+pushp end_error jmp
+
+:too_many_newlines
+pushp "YET: the number of newlines in the buffer exceeds L_MAX\n" pushp putstre call
+pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:allocate_bufs_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call swap pushp flush call
+pushp mem_close call
+pushp end_error jmp
+
+:task_colon_stdin_read_failure_2
+pushp "YET: failed to read from stdin\n" pushp putstre call
+pop pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_colon_stdin_read_failure
+pushp "YET: failed to read from stdin\n" pushp putstre call
+pop pushp flush call pushp flush call pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:buffer_too_large
+pushp "YET: buffer size too large\n" pushp putstre call
+pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_colon_allocation_failure_4
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:stdin_read_too_large
+pushp "YET: too large read from stdin\n" pushp putstre call
+pushp flush call pushp flush call pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_colon_allocation_failure_3
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_colon_allocation_failure_2
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_colon_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pop pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_y_allocation_failure_2
+pushp "YET: allocation failure\n" pushp putstre call
+pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_y_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_k_allocation_failure_2
+pushp "YET: allocation failure\n" pushp putstre call
+pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_k_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_tilde_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_d_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:task_equal_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
 :open_failure_rd
-pushp "YET: failed to open file for reading\n" pushp putstre call
-pushp flush_bufs call
+pushp "YET: failed to open input for reading\n" pushp putstre call
+pop pushp flush call
 pushp mem_close call
 pushp end_error jmp
 
 :open_failure_wr
-pushp "YET: failed to open file for writing\n" pushp putstre call
+pushp "YET: failed to open output for writing\n" pushp putstre call
+pop pushp flush call pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
 :write_failure
-pushp "YET: failed to write to file\n" pushp putstre call
+pushp "YET: failed to write to output\n" pushp putstre call
 pushp closef call
+pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
-:stdin_read_failure
+:task_equal_stdin_read_failure
 pushp "YET: failed to read from stdin\n" pushp putstre call
+pop pushp flush call pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp
 
-:read_file_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop call pushp flush call pushp flush call
+:get_from_stdin_stdin_read_failure
+pushp "YET: failed to read from stdin\n" pushp putstre call
+pop pushp flush call
+pushp flush_bufs call
+pushp mem_close call
+pushp end_error jmp
+
+:input_too_large
+pushp "YET: input too large\n" pushp putstre call
+pushp flush call pushp flush call pushp flush call
 ldr2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
 
-:read_file_read_failure
+:read_input_allocation_failure_2
+pushp "YET: allocation failure\n" pushp putstre call
+pop pushp flush call pushp flush call
+ldr2 pushp closef call
+pushp mem_close call
+pushp end_error jmp
+
+:read_input_allocation_failure
+pushp "YET: allocation failure\n" pushp putstre call
+pop pop pushp flush call
+ldr2 pushp closef call
+pushp mem_close call
+pushp end_error jmp
+
+:read_input_read_failure
 pushp "YET: failed to read from input\n" pushp putstre call
 pop pushp flush call pushp flush call pushp flush call
 ldr2 pushp closef call
@@ -51,20 +193,7 @@ pushp end_error jmp
 
 :stdout_write_failure
 pushp "YET: failed to write to stdout\n" pushp putstre call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
-
-:task_colon_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop call pushp flush call pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
-
-:task_colon_stdin_read_failure
-pushp "YET: failed to read from stdin\n" pushp putstre call
-pop pushp flush call pushp flush call pushp flush call
+swap pushp flush call
 pushp flush_bufs call
 pushp mem_close call
 pushp end_error jmp

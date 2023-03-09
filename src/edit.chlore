@@ -273,8 +273,8 @@ over dup +buffer.buf_contents ldhp
 swap +buffer.offset ldhl
 pushp memcpy call
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl swap addp b2h
-over dup +buffer.buf_contents ldhp h2b over +buffer.offset ldhl pushi 1 addl swap addp b2h
+pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl addp b2h
+over dup +buffer.buf_contents ldhp h2b over +buffer.offset ldhl pushi 1 addl addp b2h
 swap dup +buffer.offset ldhl pushi 1 addl swap +buffer.size ldhl subl
 pushp memcpy call
 
@@ -303,13 +303,13 @@ over dup +buffer.buf_contents ldhp
 swap +buffer.offset ldhl
 pushp memcpy call
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl swap addp b2h
+pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl addp b2h
 pushp "\n"
 pushui 1
 pushp memcpy call
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl pushi 1 addl swap addp b2h
-over dup +buffer.buf_contents ldhp h2b over +buffer.offset ldhl swap addp b2h
+pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl pushi 1 addl addp b2h
+over dup +buffer.buf_contents ldhp h2b over +buffer.offset ldhl addp b2h
 swap dup +buffer.offset ldhl swap +buffer.size ldhl subl
 pushp memcpy call
 
@@ -327,7 +327,7 @@ pop
 
 pushp get_buf_ptr call str3
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_f_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_f_is_newline jeq
 pushp task_f_continue jmp
 
 :task_f_is_newline
@@ -344,7 +344,7 @@ pop
 pushp get_buf_ptr call str3
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_b_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_b_is_newline jeq
 pushp get_command_character jmp
 
 :task_b_is_newline
@@ -359,7 +359,7 @@ pushp get_buf_ptr call str3
 :task_m_loop_until_newline0
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline0_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline0_is_newline jeq
 pushp task_m_loop_until_newline0_continue jmp
 
 :task_m_loop_until_newline0_is_newline
@@ -373,7 +373,7 @@ pushp task_m_loop_until_newline0 jmp
 :task_m_loop_until_newline1
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline1_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline1_is_newline jeq
 pushp task_m_loop_until_newline1_continue jmp
 
 :task_m_loop_until_newline1_is_newline
@@ -387,7 +387,7 @@ pushp task_m_loop_until_newline1 jmp
 :task_m_loop_until_newline2
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline2_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline2_is_newline jeq
 pushp task_m_loop_until_newline2_continue jmp
 
 :task_m_loop_until_newline2_is_newline
@@ -401,7 +401,7 @@ pushp task_m_loop_until_newline2 jmp
 :task_m_loop_until_newline3
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline3_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline3_is_newline jeq
 pushp task_m_loop_until_newline3_continue jmp
 
 :task_m_loop_until_newline3_is_newline
@@ -415,7 +415,7 @@ pushp task_m_loop_until_newline3 jmp
 :task_m_loop_until_newline4
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_m_loop_until_newline4_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline4_is_newline jeq
 pushp task_m_loop_until_newline4_continue jmp
 
 :task_m_loop_until_newline4_is_newline
@@ -433,7 +433,7 @@ pushp get_buf_ptr call str3
 
 :task_comma_loop_until_end
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_comma_loop_until_end_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_comma_loop_until_end_is_newline jeq
 pushp task_comma_loop_until_end_continue jmp
 
 :task_comma_loop_until_end_is_newline
@@ -452,7 +452,7 @@ pushp get_buf_ptr call str3
 :task_dot_loop_until_beginning
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_dot_loop_until_beginning_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_dot_loop_until_beginning_is_newline jeq
 pushp task_dot_loop_until_beginning jmp
 
 :task_dot_loop_until_beginning_is_newline
@@ -467,7 +467,7 @@ pushp get_buf_ptr call str3
 :task_semicolon_loop_until_space
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_semicolon_loop_until_space_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_semicolon_loop_until_space_is_newline jeq
 pushp task_semicolon_loop_until_space_continue jmp
 
 :task_semicolon_loop_until_space_is_newline
@@ -486,7 +486,7 @@ pushp get_buf_ptr call str3
 :task_p_loop_until_newline
 ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
 ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_p_loop_until_newline_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_p_loop_until_newline_is_newline jeq
 pushp task_p_loop_until_newline_continue jmp
 
 :task_p_loop_until_newline_is_newline
@@ -504,7 +504,7 @@ pushp get_buf_ptr call str3
 
 :task_v_loop_until_newline0
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline0_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline0_is_newline jeq
 pushp task_v_loop_until_newline0_continue jmp
 
 :task_v_loop_until_newline0_is_newline
@@ -519,7 +519,7 @@ pushp task_v_loop_until_newline0 jmp
 
 :task_v_loop_until_newline1
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline1_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline1_is_newline jeq
 pushp task_v_loop_until_newline1_continue jmp
 
 :task_v_loop_until_newline1_is_newline
@@ -534,7 +534,7 @@ pushp task_v_loop_until_newline1 jmp
 
 :task_v_loop_until_newline2
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline2_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline2_is_newline jeq
 pushp task_v_loop_until_newline2_continue jmp
 
 :task_v_loop_until_newline2_is_newline
@@ -549,7 +549,7 @@ pushp task_v_loop_until_newline2 jmp
 
 :task_v_loop_until_newline3
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline3_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline3_is_newline jeq
 pushp task_v_loop_until_newline3_continue jmp
 
 :task_v_loop_until_newline3_is_newline
@@ -564,7 +564,7 @@ pushp task_v_loop_until_newline3 jmp
 
 :task_v_loop_until_newline4
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_v_loop_until_newline4_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline4_is_newline jeq
 pushp task_v_loop_until_newline4_continue jmp
 
 :task_v_loop_until_newline4_is_newline
@@ -615,8 +615,8 @@ pushp get_buf_ptr call +buffer.buf_contents sthp
 
 ldr0 pushp task_k_allocation_failure_2 jnz ;check if the allocation was successful
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl swap addp b2h
-ldr3 +buffer.buf_contents ldhp h2b ldr4 swap addp b2h
+pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl addp b2h
+ldr3 +buffer.buf_contents ldhp h2b ldr4 addp b2h
 ldr4 ldr3 +buffer.size ldhl subl
 pushp memcpy call
 
@@ -678,8 +678,8 @@ pushp get_buf_ptr call +buffer.buf_contents sthp
 
 ldr0 pushp task_y_allocation_failure_2 jnz ;check if the allocation was successful
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl swap addp b2h
-ldr3 +buffer.buf_contents ldhp h2b ldr4 swap addp b2h
+pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl addp b2h
+ldr3 +buffer.buf_contents ldhp h2b ldr4 addp b2h
 ldr4 ldr3 +buffer.size ldhl subl
 pushp memcpy call
 
@@ -701,7 +701,7 @@ pushp get_buf_ptr call str3
 
 :task_z_loop_until_space
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_z_loop_until_space_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_z_loop_until_space_is_newline jeq
 pushp task_z_loop_until_space_continue jmp
 
 :task_z_loop_until_space_is_newline
@@ -721,7 +721,7 @@ pushp get_buf_ptr call str3
 
 :task_n_loop_until_newline
 ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp ldhc pushc '\n' pushp task_n_loop_until_newline_is_newline jeq
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_n_loop_until_newline_is_newline jeq
 pushp task_n_loop_until_newline_continue jmp
 
 :task_n_loop_until_newline_is_newline
@@ -807,8 +807,8 @@ ldr4 +buffer.buf_contents sthp
 
 ldr0 pushp task_colon_allocation_failure_4 jnz ;check if reallocation was successful
 
-ldr4 +buffer.buf_contents ldhp h2b ldr3 swap addp b2h
-over dup dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
+ldr4 +buffer.buf_contents ldhp h2b ldr3 addp b2h
+over dup dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp b2h
 swap dup +buffer.offset ldhl swap +buffer.size ldhl subl
 pushp memcpy call
 

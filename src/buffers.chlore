@@ -126,7 +126,7 @@ ldr3 dup +buffer.linum ldhl swap +buffer.dslinum sthl
 :write_first_half
 ldr3 dup dup +buffer.linum ldhl swap +buffer.dslinum ldhl subl swap +buffer.dslinum ldhl pushp "[%l:%l] " pushp putfmt call
 ldr3 dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.disp_start ldhl swap addp b2h
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.disp_start ldhl addp b2h
 ldr3 +buffer.dslinum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
@@ -143,7 +143,7 @@ ldr3 +buffer.offset ldhl addl
 ldr3 +buffer.size ldhl pushp write_all jls
 
 ldr3 dup dup +buffer.disp_start ldhl swap +buffer.offset ldhl subl swap +buffer.max_dispchars ldhui subl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp b2h
 ldr3 +buffer.linum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call
@@ -156,7 +156,7 @@ pushp write_buffer_end jmp
 
 :write_all
 ldr3 dup +buffer.size ldhl swap +buffer.offset ldhl swap subl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl swap addp b2h
+ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp b2h
 ldr3 +buffer.linum ldhl
 ldr3 +buffer.linum ldhl
 pushp linum_putnstr call

@@ -31,33 +31,37 @@ import "program_info.chlore"
 
 :main
 
-pushi 2
-pushp getargc call
-pushp write_program_information_and_quit jls
+  pushi 2
+  pushp getargc call
+  pushp write_program_information_and_quit jls
 
-pushl MAX_PATHSIZE pushi 1 addl
-pushp aseg call
-get0 pushp main_allocation_failure jnz ;check if the allocation was successful
+  pushl MAX_PATHSIZE pushi 1 addl
+  pushp aseg call
+  get0 pushp main_allocation_failure jnz ;check if the allocation was successful
 
-dup dup dup
-pushi 1
-pushl MAX_PATHSIZE
-pushp getargv call
+  dup dup dup
+  pushi 1
+  pushl MAX_PATHSIZE
+  pushp getargv call
 
-pushi O_RDONLY
-pushp openf call
-dup pushi -1 pushp open_failure_rd jeq
-write2 ;save the input file descriptor in gpr 2
+  pushi O_RDONLY
+  pushp openf call
+  dup pushi -1 pushp open_failure_rd jeq
+  write2 ;save the input file descriptor in gpr 2
 
-pushp read_input jmp
+  pushp read_input call panic
+
+  ;allocate_bufs expects a pointer on the top of the stack that it will use to initialize buffer0
+  ;do not change the contents of gpr 3
+  pushp allocate_bufs call panic
+  write5 ;save the pointer to the `buffers' struct that we allocated in gpr 5
+
+  ;do not touch gpr 5
+  ;text_editor expects a pointer to the name of the file we are currently working on at the top of the stack
+  pushp text_editor call panic
+
+  hlt
 
 :end_error
-pushi 1 hltr
-
-:quit_gracefully
-pop
-pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-hlt
+  force_panic
 

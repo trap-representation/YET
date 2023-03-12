@@ -1,208 +1,256 @@
 :main_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop
+  pushp mem_close call
+  pushp end_error jmp
 
 :too_many_newlines
-pushp "YET: the number of newlines in the buffer exceeds L_MAX\n" pushp putstre call
-pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: the number of newlines in the buffer exceeds L_MAX\n" pushp putstre call
+  pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :allocate_bufs_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call swap pushp flush call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call swap pushp flush call
+  pushp mem_close call
+  pushi 1 swap
+  ret
 
 :task_colon_stdin_read_failure_2
-pushp "YET: failed to read from stdin\n" pushp putstre call
-pop pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to read from stdin\n" pushp putstre call
+  pop pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_colon_stdin_read_failure
-pushp "YET: failed to read from stdin\n" pushp putstre call
-pop pushp flush call pushp flush call pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to read from stdin\n" pushp putstre call
+  pop pushp flush call pushp flush call pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :buffer_too_large
-pushp "YET: buffer size too large\n" pushp putstre call
-pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: buffer size too large\n" pushp putstre call
+  pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_colon_allocation_failure_4
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :stdin_read_too_large
-pushp "YET: too large read from stdin\n" pushp putstre call
-pushp flush call pushp flush call pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: too large read from stdin\n" pushp putstre call
+  pushp flush call pushp flush call pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_colon_allocation_failure_3
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_colon_allocation_failure_2
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_colon_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pop pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pop pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_y_allocation_failure_2
-pushp "YET: allocation failure\n" pushp putstre call
-pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_y_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_k_allocation_failure_2
-pushp "YET: allocation failure\n" pushp putstre call
-pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_k_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_tilde_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_d_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_equal_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :open_failure_rd
-pushp "YET: failed to open input for reading\n" pushp putstre call
-pop pushp flush call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to open input for reading\n" pushp putstre call
+  pop pushp flush call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :open_failure_wr
-pushp "YET: failed to open output for writing\n" pushp putstre call
-pop pushp flush call pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to open output for writing\n" pushp putstre call
+  pop pushp flush call pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pushp end_error jmp
 
 :write_failure
-pushp "YET: failed to write to output\n" pushp putstre call
-pushp closef call
-pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to write to output\n" pushp putstre call
+  pushp closef call
+  pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :task_equal_stdin_read_failure
-pushp "YET: failed to read from stdin\n" pushp putstre call
-pop pushp flush call pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to read from stdin\n" pushp putstre call
+  pop pushp flush call pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :get_from_stdin_stdin_read_failure
-pushp "YET: failed to read from stdin\n" pushp putstre call
-pop pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to read from stdin\n" pushp putstre call
+  pop pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :input_too_large
-pushp "YET: input too large\n" pushp putstre call
-pushp flush call pushp flush call pushp flush call
-get2 pushp closef call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: input too large\n" pushp putstre call
+  pushp flush call pushp flush call pushp flush call
+  get2 pushp closef call
+  pushp mem_close call
+  pushi 1 swap
+  ret
 
 :read_input_allocation_failure_2
-pushp "YET: allocation failure\n" pushp putstre call
-pop pushp flush call pushp flush call
-get2 pushp closef call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pushp flush call pushp flush call
+  get2 pushp closef call
+  pushp mem_close call
+  pushi 1 swap
+  ret
 
 :read_input_allocation_failure
-pushp "YET: allocation failure\n" pushp putstre call
-pop pop pushp flush call
-get2 pushp closef call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: allocation failure\n" pushp putstre call
+  pop pop pushp flush call
+  get2 pushp closef call
+  pushp mem_close call
+  pushi 1 swap
+  ret
 
 :read_input_read_failure
-pushp "YET: failed to read from input\n" pushp putstre call
-pop pushp flush call pushp flush call pushp flush call
-get2 pushp closef call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to read from input\n" pushp putstre call
+  pop pushp flush call pushp flush call pushp flush call
+  get2 pushp closef call
+  pushp mem_close call
+  pushi 1 swap
+  ret
 
 :unexpected_buffer
-pushp "YET: unexpected buffer value (this should not have happened)\n" pushp putstre call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: unexpected buffer value (this should not have happened)\n" pushp putstre call
+  pushp flush_bufs call
+  pushp mem_close call
+  pushi 1 swap
+  ret
 
 :stdout_write_failure
-pushp "YET: failed to write to stdout\n" pushp putstre call
-swap pushp flush call
-pushp flush_bufs call
-pushp mem_close call
-pushp end_error jmp
+  pushp "YET: failed to write to stdout\n" pushp putstre call
+  swap pushp flush call
+  pushp flush_bufs call
+  pushp mem_close call
+  pop pop
+  pushi 1 swap
+  ret
 
 :flush_bufs
-get5 +buffers.buffer0.buf_contents addp loadp pushp flush call
-get5 +buffers.buffer1.buf_contents addp loadp pushp flush call
-get5 +buffers.buffer2.buf_contents addp loadp pushp flush call
-get5 +buffers.buffer3.buf_contents addp loadp pushp flush call
-get5 +buffers.buffer4.buf_contents addp loadp pushp flush call
-get5 pushp flush call
-ret
+  get5 +buffers.buffer0.buf_contents addp loadp pushp flush call
+  get5 +buffers.buffer1.buf_contents addp loadp pushp flush call
+  get5 +buffers.buffer2.buf_contents addp loadp pushp flush call
+  get5 +buffers.buffer3.buf_contents addp loadp pushp flush call
+  get5 +buffers.buffer4.buf_contents addp loadp pushp flush call
+  get5 pushp flush call
+  ret

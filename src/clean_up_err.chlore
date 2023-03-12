@@ -160,28 +160,28 @@ pushp end_error jmp
 :input_too_large
 pushp "YET: input too large\n" pushp putstre call
 pushp flush call pushp flush call pushp flush call
-ldr2 pushp closef call
+get2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
 
 :read_input_allocation_failure_2
 pushp "YET: allocation failure\n" pushp putstre call
 pop pushp flush call pushp flush call
-ldr2 pushp closef call
+get2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
 
 :read_input_allocation_failure
 pushp "YET: allocation failure\n" pushp putstre call
 pop pop pushp flush call
-ldr2 pushp closef call
+get2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
 
 :read_input_read_failure
 pushp "YET: failed to read from input\n" pushp putstre call
 pop pushp flush call pushp flush call pushp flush call
-ldr2 pushp closef call
+get2 pushp closef call
 pushp mem_close call
 pushp end_error jmp
 
@@ -199,10 +199,10 @@ pushp mem_close call
 pushp end_error jmp
 
 :flush_bufs
-ldr5 h2b +buffers.buffer0.buf_contents ldhp pushp flush call
-ldr5 h2b +buffers.buffer1.buf_contents ldhp pushp flush call
-ldr5 h2b +buffers.buffer2.buf_contents ldhp pushp flush call
-ldr5 h2b +buffers.buffer3.buf_contents ldhp pushp flush call
-ldr5 h2b +buffers.buffer4.buf_contents ldhp pushp flush call
-ldr5 pushp flush call
+get5 +buffers.buffer0.buf_contents addp loadp pushp flush call
+get5 +buffers.buffer1.buf_contents addp loadp pushp flush call
+get5 +buffers.buffer2.buf_contents addp loadp pushp flush call
+get5 +buffers.buffer3.buf_contents addp loadp pushp flush call
+get5 +buffers.buffer4.buf_contents addp loadp pushp flush call
+get5 pushp flush call
 ret

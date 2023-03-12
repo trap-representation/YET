@@ -37,7 +37,7 @@ pushp write_program_information_and_quit jls
 
 pushl MAX_PATHSIZE pushi 1 addl
 pushp aseg call
-ldr0 pushp main_allocation_failure jnz ;check if the allocation was successful
+get0 pushp main_allocation_failure jnz ;check if the allocation was successful
 
 dup dup dup
 pushi 1
@@ -47,7 +47,7 @@ pushp getargv call
 pushi O_RDONLY
 pushp openf call
 dup pushi -1 pushp open_failure_rd jeq
-str2 ;save the input file descriptor in gpr 2
+write2 ;save the input file descriptor in gpr 2
 
 pushp read_input jmp
 

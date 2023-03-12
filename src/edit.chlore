@@ -2,50 +2,50 @@ set MAX_PATHSIZE 4096
 
 :read_input
 pushp NULL ;this is a pointer to a location in the heap where we will be storing the bytes read from the input
-pushi 0 str3 ;this is the size of the buffer
+pushi 0 write3 ;this is the size of the buffer
 
 pushl BUF_SIZE
 pushp aseg call ;allocate a buffer of size BUF_SIZE bytes
 ;we will be using this to read the input in chunks
-ldr0 pushp read_input_allocation_failure jnz ;check if the allocation was successful
+get0 pushp read_input_allocation_failure jnz ;check if the allocation was successful
 
 :read_loop
-ldr2 ;get the input input file descriptor
+get2 ;get the input file descriptor
 over
 pushl BUF_SIZE
 pushp readf call
-ldr0 dup pushi -1 pushp read_input_read_failure jeq ;check if the read was successful
-str4 ;store the size of the chunk we just read in gpr 4
+get0 dup pushi -1 pushp read_input_read_failure jeq ;check if the read was successful
+write4 ;store the size of the chunk we just read in gpr 4
 
-ldr3 pushl L_MAX subl ldr4 pushp input_too_large jgt
+get3 pushl L_MAX subl get4 pushp input_too_large jgt
 
 swap ;dest src -- src dest
-ldr4 ldr3 addl ;add the size of the buffer to the size of the chunk we just read
+get4 get3 addl ;add the size of the buffer to the size of the chunk we just read
 swap pushp rseg call
-ldr0 pushp read_input_allocation_failure_2 jnz ;check if reallocation was successful
+get0 pushp read_input_allocation_failure_2 jnz ;check if reallocation was successful
 
 over over ;src dest -- src dest src dest
-ldr3 swap h2b addp b2h ;this is equivalent to evaluating &buf[gpr3] in C
+get3 swap addp ;this is equivalent to evaluating &buf[gpr3] in C
 
 swap ;src dest -- dest src
-ldr4
+get4
 pushp memcpy call
 
-ldr3 ldr4 addl str3 ;add the size of the chunk read to the size of the buffer
+get3 get4 addl write3 ;add the size of the chunk read to the size of the buffer
 
 swap ;src dest -- dest src
 
-ldr4 pushl BUF_SIZE pushp text_editor jgt ;if the number of items read was <= BUF_SIZE, then that means that we just read the last chunk from the input
+get4 pushl BUF_SIZE pushp text_editor jgt ;if the number of items read was <= BUF_SIZE, then that means that we just read the last chunk from the input
 pushp read_loop jmp
 
 :text_editor
 pushp flush call
-ldr2 pushp closef call
+get2 pushp closef call
 
 pushp allocate_bufs call
 
-str5 ;save the pointer to the `buffers' struct that we allocated in gpr 5
-pushi 0 str2 ;this is the buffer we're currently working on
+write5 ;save the pointer to the `buffers' struct that we allocated in gpr 5
+pushi 0 write2 ;this is the buffer we're currently working on
 
 pushi 0 swap ;this is the repeat counter
 pushi EOF swap
@@ -54,26 +54,26 @@ pushi EOF swap
 pushp write_buffer call
 
 pushp "\n%" pushp putstr call
-ldr0 pushi EOF pushp stdout_write_failure jeq
+get0 pushi EOF pushp stdout_write_failure jeq
 
 :get_command_character
 over pushi EOF pushp repeat_task jne
 
 :repeat_task
-str3
+write3
 swap dup pushp repeat_count_zero jz
 pushi 1 swap subl
 swap
-ldr3
+get3
 over
 pushp do_task jmp
 
 :repeat_count_zero
-swap pop pushi EOF ldr3
+swap pop pushi EOF get3
 
 :get_from_stdin
 pushp getchar call
-ldr0 pushi EOF pushp get_from_stdin_stdin_read_failure jeq
+get0 pushi EOF pushp get_from_stdin_stdin_read_failure jeq
 
 :do_task
 dup pushc 'f' pushp task_f jeq
@@ -121,7 +121,7 @@ pop
 
 pushp get_integer_from_stdin call
 ;integer character_that_wasn't_read
-str3 swap ldr3 swap
+write3 swap get3 swap
 
 pushp get_command_character jmp
 
@@ -133,28 +133,28 @@ pushp get_buf_ptr call
 pushp inc_buf call
 pushp get_buf_ptr call
 
-swap +buffer.max_dispchars ldhui over +buffer.max_dispchars sthui
-pushp NULL over +buffer.buf_contents dup ldhp pushp flush call sthp
-pushl 0 over +buffer.size sthl
-pushl 0 over +buffer.offset sthl
-pushl 0 over +buffer.disp_start sthl
-pushl 1 over +buffer.linum sthl
-pushl 1 swap +buffer.dslinum sthl
+swap +buffer.max_dispchars addp loadui over +buffer.max_dispchars addp storeui
+pushp NULL over +buffer.buf_contents addp dup loadp pushp flush call storep
+pushl 0 over +buffer.size addp storel
+pushl 0 over +buffer.offset addp storel
+pushl 0 over +buffer.disp_start addp storel
+pushl 1 over +buffer.linum addp storel
+pushl 1 swap +buffer.dslinum addp storel
 
 pushp get_command_character jmp
 
 :task_at
 pop
 
-pushp get_integer_from_stdin call swap str4
+pushp get_integer_from_stdin call swap write4
 pushi 1 swap ;1 character_that_wasn't_read
-str3 swap ldr3 swap
-ldr4
-ldr5 +buffers.buffer0.max_dispchars h2b over swap sthui
-ldr5 +buffers.buffer1.max_dispchars h2b over swap sthui
-ldr5 +buffers.buffer2.max_dispchars h2b over swap sthui
-ldr5 +buffers.buffer3.max_dispchars h2b over swap sthui
-ldr5 +buffers.buffer4.max_dispchars h2b over swap sthui
+write3 swap get3 swap
+get4
+get5 +buffers.buffer0.max_dispchars addp over swap storeui
+get5 +buffers.buffer1.max_dispchars addp over swap storeui
+get5 +buffers.buffer2.max_dispchars addp over swap storeui
+get5 +buffers.buffer3.max_dispchars addp over swap storeui
+get5 +buffers.buffer4.max_dispchars addp over swap storeui
 pop
 
 pushp get_command_character jmp
@@ -162,11 +162,11 @@ pushp get_command_character jmp
 :task_dollar
 pop
 
-pushp get_integer_from_stdin call swap str4
+pushp get_integer_from_stdin call swap write4
 pushi 1 swap ;1 character_that_wasn't_read
-str3 swap ldr3 swap
-ldr4
-pushp get_buf_ptr call +buffer.max_dispchars sthui
+write3 swap get3 swap
+get4
+pushp get_buf_ptr call +buffer.max_dispchars addp storeui
 
 pushp get_command_character jmp
 
@@ -182,13 +182,13 @@ dup pushi O_WRONLY
 pushp openf call
 dup pushi -1 pushp open_failure_wr jeq
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp pushp NULL pushp task_w_continue jeq
+pushp get_buf_ptr call +buffer.buf_contents addp loadp pushp NULL pushp task_w_continue jeq
 
 dup
-pushp get_buf_ptr call dup +buffer.buf_contents ldhp
-swap +buffer.size ldhl
+pushp get_buf_ptr call dup +buffer.buf_contents addp loadp
+swap +buffer.size addp loadl
 pushp writef call
-ldr0 pushi -1 pushp write_failure jeq
+get0 pushi -1 pushp write_failure jeq
 
 :task_w_continue
 pushp closef call
@@ -202,14 +202,14 @@ pop
 
 pushl MAX_PATHSIZE pushi 1 addl
 pushp aseg call
-ldr0 pushp task_equal_allocation_failure jnz ;check if the allocation was successful
+get0 pushp task_equal_allocation_failure jnz ;check if the allocation was successful
 
 dup
 
 pushl MAX_PATHSIZE
 over
 pushp getstr call
-ldr0 pushi EOF pushp task_equal_stdin_read_failure jeq
+get0 pushi EOF pushp task_equal_stdin_read_failure jeq
 
 pushi O_WRONLY
 pushp openf call
@@ -217,13 +217,13 @@ dup pushi -1 pushp open_failure_wr jeq
 
 swap pushp flush call
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp pushp NULL pushp task_equal_continue jeq
+pushp get_buf_ptr call +buffer.buf_contents addp loadp pushp NULL pushp task_equal_continue jeq
 
 dup
-pushp get_buf_ptr call dup +buffer.buf_contents ldhp
-swap +buffer.size ldhl
+pushp get_buf_ptr call dup +buffer.buf_contents addp loadp
+swap +buffer.size addp loadl
 pushp writef call
-ldr0 pushi -1 pushp write_failure jeq
+get0 pushi -1 pushp write_failure jeq
 
 :task_equal_continue
 
@@ -237,7 +237,7 @@ pushp get_command_character jmp
 pop
 
 pushp inc_buf call
-pushp get_buf_ptr call +buffer.buf_contents ldhp pushp NULL pushp redo_noinf jeq
+pushp get_buf_ptr call +buffer.buf_contents addp loadp pushp NULL pushp redo_noinf jeq
 pushp get_command_character jmp
 
 :redo_noinf
@@ -249,7 +249,7 @@ pushp get_command_character jmp
 pop
 
 pushp dec_buf call
-pushp get_buf_ptr call +buffer.buf_contents ldhp pushp NULL pushp undo_noinf jeq
+pushp get_buf_ptr call +buffer.buf_contents addp loadp pushp NULL pushp undo_noinf jeq
 pushp get_command_character jmp
 
 :undo_noinf
@@ -261,29 +261,29 @@ pushp get_command_character jmp
 pop
 
 pushp get_buf_ptr call
-dup +buffer.size ldhl pushi 1 swap subl
+dup +buffer.size addp loadl pushi 1 swap subl
 
 pushp aseg call
-ldr0 pushp task_d_allocation_failure jnz ;check if the allocation was successful
+get0 pushp task_d_allocation_failure jnz ;check if the allocation was successful
 
-pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
+pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents addp dup loadp pushp flush call storep
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp
-over dup +buffer.buf_contents ldhp
-swap +buffer.offset ldhl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp
+over dup +buffer.buf_contents addp loadp
+swap +buffer.offset addp loadl
 pushp memcpy call
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl addp b2h
-over dup +buffer.buf_contents ldhp h2b over +buffer.offset ldhl pushi 1 addl addp b2h
-swap dup +buffer.offset ldhl pushi 1 addl swap +buffer.size ldhl subl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp over +buffer.offset addp loadl swap addp
+over dup +buffer.buf_contents addp loadp over +buffer.offset addp loadl pushi 1 addl swap addp
+swap dup +buffer.offset addp loadl pushi 1 addl swap +buffer.size addp loadl subl
 pushp memcpy call
 
-dup +buffer.size ldhl pushi 1 swap subl pushp get_buf_ptr call +buffer.size sthl
-dup +buffer.offset ldhl pushp get_buf_ptr call +buffer.offset sthl
-dup +buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
-dup +buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
-dup +buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
-+buffer.max_dispchars ldhui pushp get_buf_ptr call +buffer.max_dispchars sthui
+dup +buffer.size addp loadl pushi 1 swap subl pushp get_buf_ptr call +buffer.size addp storel
+dup +buffer.offset addp loadl pushp get_buf_ptr call +buffer.offset addp storel
+dup +buffer.disp_start addp loadl pushp get_buf_ptr call +buffer.disp_start addp storel
+dup +buffer.linum addp loadl pushp get_buf_ptr call +buffer.linum addp storel
+dup +buffer.dslinum addp loadl pushp get_buf_ptr call +buffer.dslinum addp storel
++buffer.max_dispchars addp loadui pushp get_buf_ptr call +buffer.max_dispchars addp storeui
 
 pushp get_command_character jmp
 
@@ -291,343 +291,343 @@ pushp get_command_character jmp
 pop
 
 pushp get_buf_ptr call
-dup +buffer.size ldhl pushi 1 addl
+dup +buffer.size addp loadl pushi 1 addl
 
 pushp aseg call
-ldr0 pushp task_tilde_allocation_failure jnz ;check if the allocation was successful
+get0 pushp task_tilde_allocation_failure jnz ;check if the allocation was successful
 
-pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
+pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents addp dup loadp pushp flush call storep
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp
-over dup +buffer.buf_contents ldhp
-swap +buffer.offset ldhl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp
+over dup +buffer.buf_contents addp loadp
+swap +buffer.offset addp loadl
 pushp memcpy call
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl addp b2h
+pushp get_buf_ptr call +buffer.buf_contents addp loadp over +buffer.offset addp loadl swap addp
 pushp "\n"
 pushui 1
 pushp memcpy call
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b over +buffer.offset ldhl pushi 1 addl addp b2h
-over dup +buffer.buf_contents ldhp h2b over +buffer.offset ldhl addp b2h
-swap dup +buffer.offset ldhl swap +buffer.size ldhl subl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp over +buffer.offset addp loadl pushi 1 addl swap addp
+over dup +buffer.buf_contents addp loadp over +buffer.offset addp loadl swap addp
+swap dup +buffer.offset addp loadl swap +buffer.size addp loadl subl
 pushp memcpy call
 
-dup +buffer.size ldhl pushi 1 addl pushp get_buf_ptr call +buffer.size sthl
-dup +buffer.offset ldhl pushp get_buf_ptr call +buffer.offset sthl
-dup +buffer.disp_start ldhl pushp get_buf_ptr call +buffer.disp_start sthl
-dup +buffer.linum ldhl pushp get_buf_ptr call +buffer.linum sthl
-dup +buffer.dslinum ldhl pushp get_buf_ptr call +buffer.dslinum sthl
-+buffer.max_dispchars ldhui pushp get_buf_ptr call +buffer.max_dispchars sthui
+dup +buffer.size addp loadl pushi 1 addl pushp get_buf_ptr call +buffer.size addp storel
+dup +buffer.offset addp loadl pushp get_buf_ptr call +buffer.offset addp storel
+dup +buffer.disp_start addp loadl pushp get_buf_ptr call +buffer.disp_start addp storel
+dup +buffer.linum addp loadl pushp get_buf_ptr call +buffer.linum addp storel
+dup +buffer.dslinum addp loadl pushp get_buf_ptr call +buffer.dslinum addp storel
++buffer.max_dispchars addp loadui pushp get_buf_ptr call +buffer.max_dispchars addp storeui
 
 pushp get_command_character jmp
 
 :task_f
 pop
 
-pushp get_buf_ptr call str3
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_f_is_newline jeq
+pushp get_buf_ptr call write3
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_f_is_newline jeq
 pushp task_f_continue jmp
 
 :task_f_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_f_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
 pushp get_command_character jmp
 
 :task_b
 pop
 
-pushp get_buf_ptr call str3
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_b_is_newline jeq
+pushp get_buf_ptr call write3
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_b_is_newline jeq
 pushp get_command_character jmp
 
 :task_b_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 pushp get_command_character jmp
 
 :task_m
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_m_loop_until_newline0
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline0_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_m_loop_until_newline0_is_newline jeq
 pushp task_m_loop_until_newline0_continue jmp
 
 :task_m_loop_until_newline0_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 
 :task_m_loop_until_newline0_continue
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_m_loop_until_newline1 jeq
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_m_loop_until_newline1 jeq
 pushp task_m_loop_until_newline0 jmp
 
 :task_m_loop_until_newline1
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline1_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_m_loop_until_newline1_is_newline jeq
 pushp task_m_loop_until_newline1_continue jmp
 
 :task_m_loop_until_newline1_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 
 :task_m_loop_until_newline1_continue
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_m_loop_until_newline2 jeq
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_m_loop_until_newline2 jeq
 pushp task_m_loop_until_newline1 jmp
 
 :task_m_loop_until_newline2
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline2_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_m_loop_until_newline2_is_newline jeq
 pushp task_m_loop_until_newline2_continue jmp
 
 :task_m_loop_until_newline2_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 
 :task_m_loop_until_newline2_continue
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_m_loop_until_newline3 jeq
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_m_loop_until_newline3 jeq
 pushp task_m_loop_until_newline2 jmp
 
 :task_m_loop_until_newline3
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline3_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_m_loop_until_newline3_is_newline jeq
 pushp task_m_loop_until_newline3_continue jmp
 
 :task_m_loop_until_newline3_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 
 :task_m_loop_until_newline3_continue
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_m_loop_until_newline4 jeq
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_m_loop_until_newline4 jeq
 pushp task_m_loop_until_newline3 jmp
 
 :task_m_loop_until_newline4
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_m_loop_until_newline4_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_m_loop_until_newline4_is_newline jeq
 pushp task_m_loop_until_newline4_continue jmp
 
 :task_m_loop_until_newline4_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 
 :task_m_loop_until_newline4_continue
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp get_command_character jeq
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp get_command_character jeq
 pushp task_m_loop_until_newline4 jmp
 
 :task_comma
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_comma_loop_until_end
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_comma_loop_until_end_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_comma_loop_until_end_is_newline jeq
 pushp task_comma_loop_until_end_continue jmp
 
 :task_comma_loop_until_end_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_comma_loop_until_end_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
 pushp task_comma_loop_until_end jmp
 
 :task_dot
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_dot_loop_until_beginning
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_dot_loop_until_beginning_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_dot_loop_until_beginning_is_newline jeq
 pushp task_dot_loop_until_beginning jmp
 
 :task_dot_loop_until_beginning_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 pushp task_dot_loop_until_beginning jmp
 
 :task_semicolon
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_semicolon_loop_until_space
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_semicolon_loop_until_space_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_semicolon_loop_until_space_is_newline jeq
 pushp task_semicolon_loop_until_space_continue jmp
 
 :task_semicolon_loop_until_space_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 
 :task_semicolon_loop_until_space_continue
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushp isspace call pushp get_command_character jnz
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushp isspace call pushp get_command_character jnz
 pushp task_semicolon_loop_until_space jmp
 
 :task_p
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_p_loop_until_newline
-ldr3 +buffer.offset ldhl pushi 0 pushp get_command_character jeq
-ldr3 +buffer.offset dup ldhl pushi 1 swap subl swap sthl
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_p_loop_until_newline_is_newline jeq
+get3 +buffer.offset addp loadl pushi 0 pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 swap subl swap storel
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_p_loop_until_newline_is_newline jeq
 pushp task_p_loop_until_newline_continue jmp
 
 :task_p_loop_until_newline_is_newline
-ldr3 +buffer.linum dup ldhl pushi 1 swap subl swap sthl
+get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
 
 :task_p_loop_until_newline_continue
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp get_command_character jeq
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp get_command_character jeq
 pushp task_p_loop_until_newline jmp
 
 :task_v
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_v_loop_until_newline0
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline0_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_v_loop_until_newline0_is_newline jeq
 pushp task_v_loop_until_newline0_continue jmp
 
 :task_v_loop_until_newline0_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_v_loop_until_newline0_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_v_loop_until_newline1 jeq
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_v_loop_until_newline1 jeq
 pushp task_v_loop_until_newline0 jmp
 
 :task_v_loop_until_newline1
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline1_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_v_loop_until_newline1_is_newline jeq
 pushp task_v_loop_until_newline1_continue jmp
 
 :task_v_loop_until_newline1_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_v_loop_until_newline1_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_v_loop_until_newline2 jeq
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_v_loop_until_newline2 jeq
 pushp task_v_loop_until_newline1 jmp
 
 :task_v_loop_until_newline2
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline2_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_v_loop_until_newline2_is_newline jeq
 pushp task_v_loop_until_newline2_continue jmp
 
 :task_v_loop_until_newline2_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_v_loop_until_newline2_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_v_loop_until_newline3 jeq
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_v_loop_until_newline3 jeq
 pushp task_v_loop_until_newline2 jmp
 
 :task_v_loop_until_newline3
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline3_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_v_loop_until_newline3_is_newline jeq
 pushp task_v_loop_until_newline3_continue jmp
 
 :task_v_loop_until_newline3_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_v_loop_until_newline3_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_v_loop_until_newline4 jeq
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_v_loop_until_newline4 jeq
 pushp task_v_loop_until_newline3 jmp
 
 :task_v_loop_until_newline4
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_v_loop_until_newline4_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_v_loop_until_newline4_is_newline jeq
 pushp task_v_loop_until_newline4_continue jmp
 
 :task_v_loop_until_newline4_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_v_loop_until_newline4_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp get_command_character jeq
 pushp task_v_loop_until_newline4 jmp
 
 :task_k
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
-ldr3 +buffer.offset ldhl
+get3 +buffer.offset addp loadl
 
 pushp aseg call
-ldr0 pushp task_k_allocation_failure jnz ;check if the allocation was successful
+get0 pushp task_k_allocation_failure jnz ;check if the allocation was successful
 
-pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
+pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents addp dup loadp pushp flush call storep
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp
-ldr3 dup +buffer.buf_contents ldhp
-swap +buffer.offset ldhl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp
+get3 dup +buffer.buf_contents addp loadp
+swap +buffer.offset addp loadl
 pushp memcpy call
 
-ldr3 +buffer.offset ldhl str4
+get3 +buffer.offset addp loadl write4
 
 pushp dec_buf call
 
 :task_k_loop_until_newline
-ldr4 ldr3 +buffer.size ldhl pushp task_k_write_rem jeq
-ldr4 pushi 1 addl str4
-ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp task_k_write_rem jeq
+get4 get3 +buffer.size addp loadl pushp task_k_write_rem jeq
+get4 pushi 1 addl write4
+get4 get3 +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp task_k_write_rem jeq
 pushp task_k_loop_until_newline jmp
 
 :task_k_write_rem
 pushp inc_buf call
-ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl
-pushp get_buf_ptr call +buffer.buf_contents ldhp
+get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp
 
 pushp rseg call
-pushp get_buf_ptr call +buffer.buf_contents sthp
+pushp get_buf_ptr call +buffer.buf_contents addp storep
 
-ldr0 pushp task_k_allocation_failure_2 jnz ;check if the allocation was successful
+get0 pushp task_k_allocation_failure_2 jnz ;check if the allocation was successful
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl addp b2h
-ldr3 +buffer.buf_contents ldhp h2b ldr4 addp b2h
-ldr4 ldr3 +buffer.size ldhl subl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp get3 +buffer.offset addp loadl swap addp
+get3 +buffer.buf_contents addp loadp get4 swap addp
+get4 get3 +buffer.size addp loadl subl
 pushp memcpy call
 
 pushp get_buf_ptr call
 
-ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.size sthl
-ldr3 +buffer.offset ldhl over +buffer.offset sthl
-ldr3 +buffer.disp_start ldhl over +buffer.disp_start sthl
-ldr3 +buffer.linum ldhl over +buffer.linum sthl
-ldr3 +buffer.dslinum ldhl over +buffer.dslinum sthl
-ldr3 +buffer.max_dispchars ldhui swap +buffer.max_dispchars sthui
+get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl over +buffer.size addp storel
+get3 +buffer.offset addp loadl over +buffer.offset addp storel
+get3 +buffer.disp_start addp loadl over +buffer.disp_start addp storel
+get3 +buffer.linum addp loadl over +buffer.linum addp storel
+get3 +buffer.dslinum addp loadl over +buffer.dslinum addp storel
+get3 +buffer.max_dispchars addp loadui swap +buffer.max_dispchars addp storeui
 
 pushp get_command_character jmp
 
@@ -635,126 +635,126 @@ pushp get_command_character jmp
 pop
 
 :task_pound_read_stdin_loop
-pushp getchar call str3
-ldr3 pushi EOF pushp get_command_character jeq
-ldr3 pushc '\n' pushp get_command_character jeq
+pushp getchar call write3
+get3 pushi EOF pushp get_command_character jeq
+get3 pushc '\n' pushp get_command_character jeq
 pushp task_pound_read_stdin_loop jmp
 
 :task_y
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
-ldr3 +buffer.offset ldhl
+get3 +buffer.offset addp loadl
 
 pushp aseg call
-pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call sthp
+pushp inc_buf call pushp get_buf_ptr call +buffer.buf_contents addp dup loadp pushp flush call storep
 
-ldr0 pushp task_y_allocation_failure jnz ;check if the allocation was successful
+get0 pushp task_y_allocation_failure jnz ;check if the allocation was successful
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp
-ldr3 dup +buffer.buf_contents ldhp
-swap +buffer.offset ldhl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp
+get3 dup +buffer.buf_contents addp loadp
+swap +buffer.offset addp loadl
 pushp memcpy call
 
-ldr3 +buffer.offset ldhl str4
+get3 +buffer.offset addp loadl write4
 
 pushp dec_buf call
 
 :task_y_loop_until_space
-ldr4 ldr3 +buffer.size ldhl pushp task_y_write_rem jeq
-ldr4 pushi 1 addl str4
-ldr4 ldr3 +buffer.buf_contents ldhp h2b addp
-ldhc pushp isspace call pushp task_y_write_rem jnz
+get4 get3 +buffer.size addp loadl pushp task_y_write_rem jeq
+get4 pushi 1 addl write4
+get4 get3 +buffer.buf_contents addp loadp addp
+loadc pushp isspace call pushp task_y_write_rem jnz
 pushp task_y_loop_until_space jmp
 
 :task_y_write_rem
 pushp inc_buf call
-ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl
-pushp get_buf_ptr call +buffer.buf_contents ldhp
+get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp
 
 pushp rseg call
-pushp get_buf_ptr call +buffer.buf_contents sthp
+pushp get_buf_ptr call +buffer.buf_contents addp storep
 
-ldr0 pushp task_y_allocation_failure_2 jnz ;check if the allocation was successful
+get0 pushp task_y_allocation_failure_2 jnz ;check if the allocation was successful
 
-pushp get_buf_ptr call +buffer.buf_contents ldhp h2b ldr3 +buffer.offset ldhl addp b2h
-ldr3 +buffer.buf_contents ldhp h2b ldr4 addp b2h
-ldr4 ldr3 +buffer.size ldhl subl
+pushp get_buf_ptr call +buffer.buf_contents addp loadp get3 +buffer.offset addp loadl swap addp
+get3 +buffer.buf_contents addp loadp get4 swap addp
+get4 get3 +buffer.size addp loadl subl
 pushp memcpy call
 
 pushp get_buf_ptr call
 
-ldr3 dup +buffer.offset ldhl ldr4 subl swap +buffer.size ldhl subl over +buffer.size sthl
-ldr3 +buffer.offset ldhl over +buffer.offset sthl
-ldr3 +buffer.disp_start ldhl over +buffer.disp_start sthl
-ldr3 +buffer.linum ldhl over +buffer.linum sthl
-ldr3 +buffer.dslinum ldhl over +buffer.dslinum sthl
-ldr3 +buffer.max_dispchars ldhui swap +buffer.max_dispchars sthui
+get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl over +buffer.size addp storel
+get3 +buffer.offset addp loadl over +buffer.offset addp storel
+get3 +buffer.disp_start addp loadl over +buffer.disp_start addp storel
+get3 +buffer.linum addp loadl over +buffer.linum addp storel
+get3 +buffer.dslinum addp loadl over +buffer.dslinum addp storel
+get3 +buffer.max_dispchars addp loadui swap +buffer.max_dispchars addp storeui
 
 pushp get_command_character jmp
 
 :task_z
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_z_loop_until_space
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_z_loop_until_space_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_z_loop_until_space_is_newline jeq
 pushp task_z_loop_until_space_continue jmp
 
 :task_z_loop_until_space_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_z_loop_until_space_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushp isspace call pushp get_command_character jnz
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushp isspace call pushp get_command_character jnz
 pushp task_z_loop_until_space jmp
 
 :task_n
 pop
 
-pushp get_buf_ptr call str3
+pushp get_buf_ptr call write3
 
 :task_n_loop_until_newline
-ldr3 dup +buffer.offset ldhl swap +buffer.size ldhl pushp get_command_character jeq
-ldr3 dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp ldhc pushc '\n' pushp task_n_loop_until_newline_is_newline jeq
+get3 dup +buffer.offset addp loadl swap +buffer.size addp loadl pushp get_command_character jeq
+get3 dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp loadc pushc '\n' pushp task_n_loop_until_newline_is_newline jeq
 pushp task_n_loop_until_newline_continue jmp
 
 :task_n_loop_until_newline_is_newline
-ldr3 +buffer.linum ldhl pushl L_MAX pushp too_many_newlines jeq
-ldr3 +buffer.linum dup ldhl pushi 1 addl swap sthl
+get3 +buffer.linum addp loadl pushl L_MAX pushp too_many_newlines jeq
+get3 +buffer.linum addp dup loadl pushi 1 addl swap storel
 
 :task_n_loop_until_newline_continue
-ldr3 +buffer.offset dup ldhl pushi 1 addl swap sthl
-ldr3 dup +buffer.offset ldhl swap +buffer.buf_contents ldhp h2b addp
-ldhc pushc '\n' pushp get_command_character jeq
+get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
+get3 dup +buffer.offset addp loadl swap +buffer.buf_contents addp loadp addp
+loadc pushc '\n' pushp get_command_character jeq
 pushp task_n_loop_until_newline jmp
 
 :task_colon
 pop
 
-pushp get_buf_ptr call dup +buffer.buf_contents ldhp
-swap +buffer.offset ldhl str3
+pushp get_buf_ptr call dup +buffer.buf_contents addp loadp
+swap +buffer.offset addp loadl write3
 
 pushp inc_buf call
-pushp get_buf_ptr call +buffer.buf_contents dup ldhp pushp flush call
+pushp get_buf_ptr call +buffer.buf_contents addp dup loadp pushp flush call
 
-ldr3
+get3
 pushp aseg call
-ldr0 pushp task_colon_allocation_failure jnz ;check if the allocation was successful
+get0 pushp task_colon_allocation_failure jnz ;check if the allocation was successful
 
-over sthp
+over storep
 
 ;src dest_a
 
-ldhp
+loadp
 
 over over swap ;src dest -- src dest dest src
-ldr3
+get3
 pushp memcpy call
 
 swap pop ;src dest -- dest
@@ -762,62 +762,62 @@ swap pop ;src dest -- dest
 pushl BUF_SIZE pushi 1 addl
 pushp aseg call ;allocate a buffer of size BUF_SIZE bytes
 ;we will be using this to read stdin in chunks
-ldr0 pushp task_colon_allocation_failure_2 jnz ;check if the allocation was successful
+get0 pushp task_colon_allocation_failure_2 jnz ;check if the allocation was successful
 
 :task_colon_read_stdin_loop
 pushl BUF_SIZE
 over
 pushp getstr call
-ldr0 dup pushi EOF pushp task_colon_stdin_read_failure jeq
-str4 ;store the size of the chunk we just read in gpr 4
+get0 dup pushi EOF pushp task_colon_stdin_read_failure jeq
+write4 ;store the size of the chunk we just read in gpr 4
 
-ldr3 pushl L_MAX subl ldr4 pushp stdin_read_too_large jgt
+get3 pushl L_MAX subl get4 pushp stdin_read_too_large jgt
 
 swap ;dest src -- src dest
-ldr4 ldr3 addl ;add the size of the buffer to the size of the chunk we just read
+get4 get3 addl ;add the size of the buffer to the size of the chunk we just read
 swap pushp rseg call
-ldr0 pushp task_colon_allocation_failure_3 jnz ;check if reallocation was successful
+get0 pushp task_colon_allocation_failure_3 jnz ;check if reallocation was successful
 
 over over ;src dest -- src dest src dest
-ldr3 swap h2b addp b2h ;this is equivalent to evaluating &buf[gpr3] in C
+get3 swap addp ;this is equivalent to evaluating &buf[gpr3] in C
 
 swap ;src dest -- dest src
-ldr4
+get4
 pushp memcpy call
 
-ldr3 ldr4 addl str3 ;add the size of the chunk read to the size of the buffer
+get3 get4 addl write3 ;add the size of the chunk read to the size of the buffer
 
 swap ;src dest -- dest src
 
-ldr4 pushl BUF_SIZE pushp update_buffers jgt ;if the number of items read was <= BUF_SIZE, then that means that we just read the last chunk from stdin
+get4 pushl BUF_SIZE pushp update_buffers jgt ;if the number of items read was <= BUF_SIZE, then that means that we just read the last chunk from stdin
 pushp task_colon_read_stdin_loop jmp
 
 :update_buffers
 pushp flush call
 
-pushp get_buf_ptr call str4
-ldr4 +buffer.buf_contents sthp
+pushp get_buf_ptr call write4
+get4 +buffer.buf_contents addp storep
 
 pushp dec_buf call pushp get_buf_ptr call
 
-dup dup +buffer.offset ldhl swap +buffer.size ldhl subl pushl L_MAX subl ldr3 pushp buffer_too_large jgt
+dup dup +buffer.offset addp loadl swap +buffer.size addp loadl subl pushl L_MAX subl get3 pushp buffer_too_large jgt
 
-dup dup +buffer.offset ldhl swap +buffer.size ldhl subl ldr3 addl ldr4 +buffer.buf_contents ldhp pushp rseg call
-ldr4 +buffer.buf_contents sthp
+dup dup +buffer.offset addp loadl swap +buffer.size addp loadl subl get3 addl get4 +buffer.buf_contents addp loadp pushp rseg call
+get4 +buffer.buf_contents addp storep
 
-ldr0 pushp task_colon_allocation_failure_4 jnz ;check if reallocation was successful
+get0 pushp task_colon_allocation_failure_4 jnz ;check if reallocation was successful
 
-ldr4 +buffer.buf_contents ldhp h2b ldr3 addp b2h
-over dup dup +buffer.buf_contents ldhp h2b swap +buffer.offset ldhl addp b2h
-swap dup +buffer.offset ldhl swap +buffer.size ldhl subl
+get4 +buffer.buf_contents addp loadp get3 swap addp
+over dup dup +buffer.buf_contents addp loadp swap +buffer.offset addp loadl swap addp
+swap dup +buffer.offset addp loadl swap +buffer.size addp loadl subl
 pushp memcpy call
 
-dup dup +buffer.offset ldhl swap +buffer.size ldhl subl ldr3 addl ldr4 +buffer.size sthl
-dup +buffer.disp_start ldhl ldr4 +buffer.disp_start sthl
-dup +buffer.linum ldhl ldr4 +buffer.linum sthl
-dup +buffer.dslinum ldhl ldr4 +buffer.dslinum sthl
-dup +buffer.max_dispchars ldhui ldr4 +buffer.max_dispchars sthui
-ldr3 ldr4 +buffer.offset sthl
+dup dup +buffer.offset addp loadl swap +buffer.size addp loadl subl get3 addl get4 +buffer.size addp storel
+dup +buffer.disp_start addp loadl get4 +buffer.disp_start addp storel
+dup +buffer.linum addp loadl get4 +buffer.linum addp storel
+dup +buffer.dslinum addp loadl get4 +buffer.dslinum addp storel
+dup +buffer.max_dispchars addp loadui get4 +buffer.max_dispchars addp storeui
+get3 get4 +buffer.offset addp storel
 
 pushp inc_buf call
 
@@ -826,12 +826,12 @@ pop
 pushp get_command_character jmp
 
 :get_integer_from_stdin
-str3
+write3
 pushi 0
 
 :get_integer_from_stdin_loop
 pushp getchar call
-ldr0 pushi EOF pushp task_colon_stdin_read_failure_2 jeq
+get0 pushi EOF pushp task_colon_stdin_read_failure_2 jeq
 dup pushi EOF pushp get_integer_from_stdin_end jeq
 
 pushc '0' over pushp maybe_integer jge
@@ -848,5 +848,5 @@ addl
 pushp get_integer_from_stdin_loop jmp
 
 :get_integer_from_stdin_end
-ldr3 ret
+get3 ret
 

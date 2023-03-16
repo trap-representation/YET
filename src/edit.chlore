@@ -141,6 +141,7 @@ set MAX_PATHSIZE 4096
   :task_e
     pop
 
+    swap pop swap pop
     pushp get_integer_from_stdin call
     ;integer character_that_wasn't_read
     write3 swap get3 swap

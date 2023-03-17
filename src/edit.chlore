@@ -36,7 +36,7 @@ set MAX_PATHSIZE 4097
 
     swap ;src dest -- dest src
 
-    get4 pushl BUF_SIZE pushp read_loop_end jgt ;if the number of items read was <= BUF_SIZE, then that means that we just read the last chunk from the input
+    get4 pushl BUF_SIZE pushp read_loop_end jgt ;if the number of items read was <= BUF_SIZE, that means that we just read the last chunk from the input
     pushp read_loop jmp
     
     :read_loop_end
@@ -804,7 +804,7 @@ set MAX_PATHSIZE 4097
 
       swap ;src dest -- dest src
 
-      get4 pushl BUF_SIZE pushp update_buffers jgt ;if the number of items read was <= BUF_SIZE, then that means that we just read the last chunk from stdin
+      get4 pushl BUF_SIZE pushp update_buffers jgt ;if the number of items read was <= BUF_SIZE, that means that we just read the last chunk from stdin
       pushp task_colon_read_stdin_loop jmp
 
     :update_buffers

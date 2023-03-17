@@ -1,4 +1,4 @@
-set MAX_PATHSIZE 4096
+set MAX_PATHSIZE 4097
 
 :read_input
   write5
@@ -106,7 +106,7 @@ set MAX_PATHSIZE 4096
   dup pushc '$' pushp task_dollar jeq
   dup pushc '@' pushp task_at jeq
   dup pushc 'q' pushp task_q jeq
-  dup pushi EOF pushp task_eof jeq
+  dup pushi EOF pushp ignore jeq
   dup pushp isspace call pushp ignore jnz
   pop pushp noassigned_task jmp
 
@@ -119,15 +119,6 @@ set MAX_PATHSIZE 4096
     pushp "YET: no task assigned to character\n" pushp putstre call
 
     pushp get_command_character jmp
-
-  :task_eof
-    pop
-    pushp flush call
-    pushp flush_bufs call
-    pushp mem_close call
-    pop pop
-    pushi 0 swap
-    ret
 
   :task_q
     pop

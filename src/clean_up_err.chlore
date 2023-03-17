@@ -1,6 +1,5 @@
 :main_allocation_failure
   pushp "YET: allocation failure\n" pushp putstre call
-  pop
   pushp mem_close call
   pushp end_error jmp
 
@@ -159,16 +158,15 @@
   pushp "YET: failed to open input for reading\n" pushp putstre call
   pop pushp flush call
   pushp mem_close call
-  pop pop
-  pushi 1 swap
-  ret
+  pushp end_error jmp
 
 :open_failure_wr
   pushp "YET: failed to open output for writing\n" pushp putstre call
   pop pushp flush call pushp flush call
   pushp flush_bufs call
   pushp mem_close call
-  pushp end_error jmp
+  pushi 1 swap
+  ret
 
 :write_failure
   pushp "YET: failed to write to output\n" pushp putstre call

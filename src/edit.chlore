@@ -169,6 +169,7 @@ set MAX_PATHSIZE 4096
   :task_at
     pop
 
+    swap pop swap pop
     pushp get_integer_from_stdin call swap write4
     pushi 1 swap ;1 character_that_wasn't_read
     write3 swap get3 swap
@@ -177,14 +178,14 @@ set MAX_PATHSIZE 4096
     get5 +buffers.buffer1.max_dispchars addp over swap storeui
     get5 +buffers.buffer2.max_dispchars addp over swap storeui
     get5 +buffers.buffer3.max_dispchars addp over swap storeui
-    get5 +buffers.buffer4.max_dispchars addp over swap storeui
-    pop
+    get5 +buffers.buffer4.max_dispchars addp storeui
 
     pushp get_command_character jmp
 
   :task_dollar
     pop
 
+    swap pop swap pop
     pushp get_integer_from_stdin call swap write4
     pushi 1 swap ;1 character_that_wasn't_read
     write3 swap get3 swap

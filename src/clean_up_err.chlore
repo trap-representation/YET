@@ -201,7 +201,7 @@
   pushp flush call pushp flush call pushp flush call
   get2 pushp closef call
   pushp mem_close call
-  pushi 1 swap
+  pushi 1 get5
   ret
 
 :read_input_allocation_failure_2
@@ -209,7 +209,7 @@
   pop pushp flush call pushp flush call
   get2 pushp closef call
   pushp mem_close call
-  pushi 1 swap
+  pushi 1 get5
   ret
 
 :read_input_allocation_failure
@@ -217,7 +217,7 @@
   pop pop pushp flush call
   get2 pushp closef call
   pushp mem_close call
-  pushi 1 swap
+  pushi 1 get5
   ret
 
 :read_input_read_failure
@@ -225,7 +225,7 @@
   pop pushp flush call pushp flush call pushp flush call
   get2 pushp closef call
   pushp mem_close call
-  pushi 1 swap
+  pushi 1 get5
   ret
 
 :unexpected_buffer

@@ -16,18 +16,18 @@
 
 import "stdlib.chlore"
 import "io.chlore"
-;import "alloc2.chlore"
-import "/usr/local/include/memchk.chlore" ;uncomment this line and comment out the previous line to use the allocator provided by the `memchk' library (instead of the one that's provided by the standard library) for detecting memory leaks
+import "alloc2.chlore"
+;import "/usr/local/include/memchk.chlore" ;uncomment this line and comment out the previous line to use the allocator provided by the `memchk' library (instead of the one that's provided by the standard library) for detecting memory leaks
 import "stddef.chlore"
 import "string.chlore"
 import "types.chlore"
 
 set BUF_SIZE 40
 
-import "/usr/local/bin/buffers.chlore"
-import "/usr/local/bin/clean_up_err.chlore"
-import "/usr/local/bin/edit.chlore"
-import "/usr/local/bin/program_info.chlore"
+import "/usr/local/bin/_yet/buffers.chlore"
+import "/usr/local/bin/_yet/clean_up_err.chlore"
+import "/usr/local/bin/_yet/edit.chlore"
+import "/usr/local/bin/_yet/program_info.chlore"
 
 :main
 

@@ -47,18 +47,18 @@ import "/usr/local/bin/_yet/program_info.chlore"
   pushi O_RDONLY
   pushp openf call
   dup pushi -1 pushp open_failure_rd jeq
-  write2 ;save the input file descriptor in gpr 2
+  write2 ;save the input file descriptor in block 2
 
   pushp read_input call
   pushi 1 pushp end_error jeq
 
   ;allocate_bufs expects a pointer on the top of the stack that it will use to initialize buffer0
-  ;do not change the contents of gpr 3
+  ;do not change the contents of block 3
   pushp allocate_bufs call
   pushi 1 pushp end_error jeq
-  write5 ;save the pointer to the `buffers' struct that we allocated in gpr 5
+  write5 ;save the pointer to the `buffers' struct that we allocated in block 5
 
-  ;do not touch gpr 5
+  ;do not touch block 5
   ;text_editor expects a pointer to the name of the file we are currently working on at the top of the stack
   pushp text_editor call
   pushi 1 pushp end_error jeq

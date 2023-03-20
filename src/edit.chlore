@@ -16,7 +16,7 @@ set MAX_PATHSIZE 4097
     pushl BUF_SIZE
     pushp readf call
     get0 dup pushi -1 pushp read_input_read_failure jeq ;check if the read was successful
-    write4 ;store the size of the chunk we just read in gpr 4
+    write4 ;store the size of the chunk we just read in block 4
 
     get3 pushl L_MAX subl get4 pushp input_too_large jgt
 
@@ -26,7 +26,7 @@ set MAX_PATHSIZE 4097
     get0 pushp read_input_allocation_failure_2 jnz ;check if reallocation was successful
 
     over over ;src dest -- src dest src dest
-    get3 swap addp ;this is equivalent to evaluating &buf[gpr3] in C
+    get3 swap addp ;this is equivalent to evaluating &buf[block_3] in C
 
     swap ;src dest -- dest src
     get4
@@ -784,7 +784,7 @@ set MAX_PATHSIZE 4097
       over
       pushp getstr call
       get0 dup pushi EOF pushp task_colon_stdin_read_failure jeq
-      write4 ;store the size of the chunk we just read in gpr 4
+      write4 ;store the size of the chunk we just read in block 4
 
       get3 pushl L_MAX subl get4 pushp stdin_read_too_large jgt
 
@@ -794,7 +794,7 @@ set MAX_PATHSIZE 4097
       get0 pushp task_colon_allocation_failure_3 jnz ;check if reallocation was successful
 
       over over ;src dest -- src dest src dest
-      get3 swap addp ;this is equivalent to evaluating &buf[gpr3] in C
+      get3 swap addp ;this is equivalent to evaluating &buf[block_3] in C
 
       swap ;src dest -- dest src
       get4

@@ -41,9 +41,10 @@ set MAX_PATHSIZE 4097
     
     :read_loop_end
       pushp flush call
+      pushi 0
+      get5
 
-  pushi 0
-  get5 ret
+  ret
 
 :text_editor
   swap
@@ -210,7 +211,7 @@ set MAX_PATHSIZE 4097
 
       pushp "YET: written\n" pushp putstr call
 
-    pushp get_command_character jmp
+      pushp get_command_character jmp
 
   :task_equal
     pop
@@ -246,7 +247,7 @@ set MAX_PATHSIZE 4097
 
       pushp "YET: written\n" pushp putstr call
 
-    pushp get_command_character jmp
+      pushp get_command_character jmp
 
   :task_r
     pop
@@ -258,7 +259,7 @@ set MAX_PATHSIZE 4097
     :redo_noinf
       pushp dec_buf call
       pushp "YET: no further redo information\n" pushp putstre call
-    pushp get_command_character jmp
+      pushp get_command_character jmp
 
   :task_u
     pop
@@ -270,7 +271,7 @@ set MAX_PATHSIZE 4097
     :undo_noinf
       pushp inc_buf call
       pushp "YET: no further undo information\n" pushp putstre call
-    pushp get_command_character jmp
+      pushp get_command_character jmp
 
   :task_d
     pop
@@ -351,7 +352,7 @@ set MAX_PATHSIZE 4097
 
     :task_f_continue
       get3 +buffer.offset addp dup loadl pushi 1 addl swap storel
-    pushp get_command_character jmp
+      pushp get_command_character jmp
 
   :task_b
     pop
@@ -364,7 +365,7 @@ set MAX_PATHSIZE 4097
 
     :task_b_is_newline
       get3 +buffer.linum addp dup loadl pushi 1 swap subl swap storel
-    pushp get_command_character jmp
+      pushp get_command_character jmp
 
   :task_m
     pop
@@ -635,16 +636,16 @@ set MAX_PATHSIZE 4097
         get4 get3 +buffer.size addp loadl subl
         pushp memcpy call
 
-    pushp get_buf_ptr call
+        pushp get_buf_ptr call
 
-    get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl over +buffer.size addp storel
-    get3 +buffer.offset addp loadl over +buffer.offset addp storel
-    get3 +buffer.disp_start addp loadl over +buffer.disp_start addp storel
-    get3 +buffer.linum addp loadl over +buffer.linum addp storel
-    get3 +buffer.dslinum addp loadl over +buffer.dslinum addp storel
-    get3 +buffer.max_dispchars addp loadui swap +buffer.max_dispchars addp storeui
+        get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl over +buffer.size addp storel
+        get3 +buffer.offset addp loadl over +buffer.offset addp storel
+        get3 +buffer.disp_start addp loadl over +buffer.disp_start addp storel
+        get3 +buffer.linum addp loadl over +buffer.linum addp storel
+        get3 +buffer.dslinum addp loadl over +buffer.dslinum addp storel
+        get3 +buffer.max_dispchars addp loadui swap +buffer.max_dispchars addp storeui
 
-    pushp get_command_character jmp
+        pushp get_command_character jmp
 
   :task_pound
     pop
@@ -698,16 +699,16 @@ set MAX_PATHSIZE 4097
         get4 get3 +buffer.size addp loadl subl
         pushp memcpy call
 
-    pushp get_buf_ptr call
+        pushp get_buf_ptr call
 
-    get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl over +buffer.size addp storel
-    get3 +buffer.offset addp loadl over +buffer.offset addp storel
-    get3 +buffer.disp_start addp loadl over +buffer.disp_start addp storel
-    get3 +buffer.linum addp loadl over +buffer.linum addp storel
-    get3 +buffer.dslinum addp loadl over +buffer.dslinum addp storel
-    get3 +buffer.max_dispchars addp loadui swap +buffer.max_dispchars addp storeui
+        get3 dup +buffer.offset addp loadl get4 subl swap +buffer.size addp loadl subl over +buffer.size addp storel
+        get3 +buffer.offset addp loadl over +buffer.offset addp storel
+        get3 +buffer.disp_start addp loadl over +buffer.disp_start addp storel
+        get3 +buffer.linum addp loadl over +buffer.linum addp storel
+        get3 +buffer.dslinum addp loadl over +buffer.dslinum addp storel
+        get3 +buffer.max_dispchars addp loadui swap +buffer.max_dispchars addp storeui
 
-    pushp get_command_character jmp
+        pushp get_command_character jmp
 
   :task_z
     pop
@@ -834,11 +835,11 @@ set MAX_PATHSIZE 4097
       dup +buffer.max_dispchars addp loadui get4 +buffer.max_dispchars addp storeui
       get3 get4 +buffer.offset addp storel
 
-    pushp inc_buf call
+      pushp inc_buf call
 
-    pop
+      pop
 
-    pushp get_command_character jmp
+      pushp get_command_character jmp
 
 :get_integer_from_stdin
   write3
@@ -863,6 +864,6 @@ set MAX_PATHSIZE 4097
         pushp get_integer_from_stdin_loop jmp
 
     :get_integer_from_stdin_end
-
-  get3 ret
+    get3
+  ret
 

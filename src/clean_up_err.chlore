@@ -1,3 +1,9 @@
+import "stdlib.chloreh"
+import "alloc2.chloreh"
+import "io.chloreh"
+
+import "/usr/local/bin/_yet/buffers_structs.chloreh"
+
 :main_allocation_failure
   pushp "YET: allocation failure\n" pushp putstre call
   pushp mem_close call

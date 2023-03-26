@@ -1,3 +1,6 @@
+import "stdlib.chloreh"
+import "io.chloreh"
+
 :write_program_information_and_quit
   pushp
 "                  -----\n\

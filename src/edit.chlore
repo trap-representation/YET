@@ -1,3 +1,13 @@
+import "stdlib.chloreh"
+import "io.chloreh"
+import "alloc2.chloreh"
+import "string.chloreh"
+import "stddef.chloreh"
+import "types.chloreh"
+
+import "/usr/local/bin/_yet/buffers_structs.chloreh"
+
+set BUF_SIZE 4096
 set MAX_PATHSIZE 4097
 
 :read_input

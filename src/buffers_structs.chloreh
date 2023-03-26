@@ -1,0 +1,15 @@
+struct buffer
+  l: size
+  l: offset
+  l: linum
+  l: disp_start
+  l: dslinum
+  ui: max_dispchars
+  p: buf_contents!
+
+struct buffers
+  buffer: buffer0
+  buffer: buffer1
+  buffer: buffer2
+  buffer: buffer3
+  buffer: buffer4!

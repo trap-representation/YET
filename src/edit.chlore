@@ -7,7 +7,7 @@ import "types.chloreh"
 
 import "/usr/local/bin/_yet/buffers_structs.chloreh"
 
-set BUF_SIZE 4096
+set BUF_SIZE 1048576
 set MAX_PATHSIZE 4097
 
 :read_input

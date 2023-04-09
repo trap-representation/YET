@@ -68,7 +68,7 @@ set MAX_PATHSIZE 4097
   :write_buffer_and_continue
   pushp write_buffer call
 
-  pushp "\n%" pushp putstr call
+  pushp "\n\%" pushp putstr call
   get0 pushi EOF pushp stdout_write_failure jeq
 
   :get_command_character

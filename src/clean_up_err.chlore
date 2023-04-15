@@ -259,4 +259,3 @@ import "/usr/local/bin/_yet/buffers_structs.chloreh"
   get5 +buffers.buffer4.buf_contents addp loadp pushp flush call
   get5 pushp flush call
   ret
-

@@ -876,4 +876,3 @@ set MAX_PATHSIZE 4097
     :get_integer_from_stdin_end
     get3
   ret
-

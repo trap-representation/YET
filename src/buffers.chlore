@@ -198,4 +198,3 @@ set BUF_N 5
     :linum_putnstr_end
       pop pop
   ret
-

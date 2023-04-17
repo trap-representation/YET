@@ -21,10 +21,9 @@ import "stddef.chloreh"
 import "string.chloreh"
 import "types.chloreh"
 
-set MAX_PATHSIZE 4097
+set MAX_PATHSIZE 4096
 
 :main
-
   pushi 2
   pushp getargc call
   pushp write_program_information_and_quit jls

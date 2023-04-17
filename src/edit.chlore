@@ -8,7 +8,7 @@ import "types.chloreh"
 import "/usr/local/bin/_yet/buffers_structs.chloreh"
 
 set BUF_SIZE 1048576
-set MAX_PATHSIZE 4097
+set MAX_PATHSIZE 4096
 
 :read_input
   write5
@@ -248,7 +248,7 @@ set MAX_PATHSIZE 4097
     dup
     pushp get_buf_ptr call dup +buffer.buf_contents addp loadp
     swap +buffer.size addp loadl
-    pushp writef call
+    pushp writestrf call
     get0 pushi -1 pushp write_failure jeq
 
     :task_equal_continue

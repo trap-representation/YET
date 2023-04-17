@@ -204,7 +204,7 @@ set MAX_PATHSIZE 4096
   :task_w
     pop
 
-    dup pushi O_WRONLY
+    dup pushi O_WRONLYT
     pushp openf call
     dup pushi -1 pushp open_failure_wr jeq
 
@@ -218,9 +218,7 @@ set MAX_PATHSIZE 4096
 
     :task_w_continue
       pushp closef call
-
       pushp "YET: written\n" pushp putstr call
-
       pushp get_command_character jmp
 
   :task_equal
@@ -237,7 +235,7 @@ set MAX_PATHSIZE 4096
     pushp getstr call
     get0 pushi EOF pushp task_equal_stdin_read_failure jeq
 
-    pushi O_WRONLY
+    pushi O_WRONLYT
     pushp openf call
     dup pushi -1 pushp open_failure_wr jeq
 

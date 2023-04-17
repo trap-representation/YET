@@ -37,7 +37,7 @@ set MAX_PATHSIZE 4096
   pushl MAX_PATHSIZE
   pushp getargv call
 
-  pushi O_RDONLY
+  pushi O_RDONLYT
   pushp openf call
   dup pushi -1 pushp open_failure_rd jeq
   write2 ;save the input file descriptor in block 2

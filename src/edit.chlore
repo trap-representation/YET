@@ -246,7 +246,7 @@ set MAX_PATHSIZE 4096
     dup
     pushp get_buf_ptr call dup +buffer.buf_contents addp loadp
     swap +buffer.size addp loadl
-    pushp writestrf call
+    pushp writef call
     get0 pushi -1 pushp write_failure jeq
 
     :task_equal_continue
@@ -261,25 +261,13 @@ set MAX_PATHSIZE 4096
     pop
 
     pushp inc_buf call
-    pushp get_buf_ptr call +buffer.buf_contents addp loadp pushp NULL pushp redo_noinf jeq
     pushp get_command_character jmp
-
-    :redo_noinf
-      pushp dec_buf call
-      pushp "YET: no further redo information\n" pushp putstre call
-      pushp get_command_character jmp
 
   :task_u
     pop
 
     pushp dec_buf call
-    pushp get_buf_ptr call +buffer.buf_contents addp loadp pushp NULL pushp undo_noinf jeq
     pushp get_command_character jmp
-
-    :undo_noinf
-      pushp inc_buf call
-      pushp "YET: no further undo information\n" pushp putstre call
-      pushp get_command_character jmp
 
   :task_d
     pop
